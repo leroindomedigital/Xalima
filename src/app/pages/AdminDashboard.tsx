@@ -1,0 +1,673 @@
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  LayoutDashboard, BookOpen, Users, Settings, 
+  Plus, Search, Bell, Filter, MoreVertical,
+  Download, FileText, CheckCircle2, X,
+  TrendingUp, Wallet, GraduationCap, AlertCircle,
+  ChevronRight, ArrowRight, ShieldCheck, PieChart,
+  MessageSquare, Star, Clock, Video, Film
+} from 'lucide-react';
+import { Button } from '../components/ui/button';
+import { Badge } from '../components/ui/badge';
+import { Card } from '../components/ui/card';
+import { Input } from '../components/ui/input';
+import { ImageWithFallback } from '../components/figma/ImageWithFallback';
+import { useState, useEffect } from 'react';
+
+export function AdminDashboard() {
+  const [activeTab, setActiveTab] = useState('overview');
+  const [isAddingPDF, setIsAddingPDF] = useState(false);
+  const [isAddingUnivCourse, setIsAddingUnivCourse] = useState(false);
+  const [localStorageRegistrations, setLocalStorageRegistrations] = useState<any[]>([]);
+  const [localStorageUnivCourses, setLocalStorageUnivCourses] = useState<any[]>([]);
+  const [newUnivCourse, setNewUnivCourse] = useState({
+    title: '', faculty: 'Mathématiques', type: 'video', url: '', duration: '', pages: ''
+  });
+
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem('xalima_registrations') || '[]');
+    setLocalStorageRegistrations(saved);
+    const savedUniv = JSON.parse(localStorage.getItem('xalima_univ_courses') || '[]');
+    setLocalStorageUnivCourses(savedUniv);
+  }, []);
+
+  const handleSaveUnivCourse = () => {
+    const course = {
+      id: Date.now(),
+      title: newUnivCourse.title,
+      category: newUnivCourse.faculty,
+      type: newUnivCourse.type,
+      url: newUnivCourse.url,
+      duration: newUnivCourse.type === 'video' ? (newUnivCourse.duration || 'N/A') : undefined,
+      pages: newUnivCourse.type === 'pdf' ? (parseInt(newUnivCourse.pages) || 0) : undefined,
+      status: 'Publié',
+      date: new Date().toLocaleDateString('fr-FR')
+    };
+    const updated = [...localStorageUnivCourses, course];
+    setLocalStorageUnivCourses(updated);
+    localStorage.setItem('xalima_univ_courses', JSON.stringify(updated));
+    setIsAddingUnivCourse(false);
+    setNewUnivCourse({ title: '', faculty: 'Mathématiques', type: 'video', url: '', duration: '', pages: '' });
+  };
+
+  const stats = [
+    { label: "Revenu Total", value: "2.450.000 FCFA", icon: Wallet, color: "text-emerald-400", trend: "+12%" },
+    { label: "Étudiants Actifs", value: (1248 + localStorageRegistrations.length).toLocaleString(), icon: Users, color: "text-blue-400", trend: "+5%" },
+    { label: "Formations", value: "26", icon: BookOpen, color: "text-indigo-400", trend: "Stable" },
+    { label: "Taux de Réussite", value: "94%", icon: TrendingUp, color: "text-purple-400", trend: "+2%" },
+  ];
+
+  const mockRegistrations = [
+    { id: 1, name: "Amadou Diallo", email: "amadou@email.sn", course: "Full Stack Web", date: "Il y a 2h", amount: "65.000 FCFA", status: "Payé" },
+    { id: 2, name: "Awa Ndiaye", email: "awa@email.sn", course: "Marketing Digital", date: "Il y a 5h", amount: "45.000 FCFA", status: "En attente" },
+    { id: 3, name: "Moussa Sow", email: "moussa@email.sn", course: "UX/UI Design", date: "Hier", amount: "50.000 FCFA", status: "Payé" },
+    { id: 4, name: "Fatou Diop", email: "fatou@email.sn", course: "Agrobusiness", date: "Hier", amount: "40.000 FCFA", status: "Payé" },
+  ];
+
+  const recentRegistrations = [
+    ...localStorageRegistrations.map(reg => ({
+      id: reg.id,
+      name: reg.name,
+      email: reg.email,
+      course: reg.interest || "Non spécifié",
+      date: reg.date,
+      amount: "À définir",
+      status: reg.status
+    })),
+    ...mockRegistrations
+  ].slice(0, 10);
+
+  const courses = [
+    { id: 1, title: "Développement Web Full Stack", enrollments: 145, revenue: "9.425.000 FCFA", pdfs: 12, status: "Actif" },
+    { id: 2, title: "Marketing Digital Avancé", enrollments: 89, revenue: "4.005.000 FCFA", pdfs: 8, status: "Actif" },
+    { id: 3, title: "UX/UI Design & Branding", enrollments: 56, revenue: "2.800.000 FCFA", pdfs: 15, status: "Actif" },
+    { id: 4, title: "Agrobusiness & Tech", enrollments: 112, revenue: "4.480.000 FCFA", pdfs: 6, status: "Maintenance" },
+  ];
+
+  return (
+    <div className="min-h-screen bg-[#020617] text-white pt-24 pb-20">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {/* Header Section */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-12">
+          <div>
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center">
+                <ShieldCheck className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-indigo-400">Administration Système</span>
+            </div>
+            <h1 className="text-4xl font-black tracking-tight">Tableau de <span className="text-indigo-500">Pilotage</span></h1>
+          </div>
+
+          <div className="flex items-center gap-4">
+             <div className="relative group hidden sm:block">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <Input className="w-64 bg-white/5 border-white/10 rounded-2xl pl-12 h-12 focus:border-indigo-500 transition-all font-medium placeholder:text-gray-500" placeholder="Rechercher..." />
+             </div>
+             <Button variant="outline" className="h-12 w-12 rounded-2xl border-white/10 p-0 relative">
+                <Bell className="w-5 h-5 text-gray-400" />
+                <span className="absolute top-3 right-3 w-2 h-2 bg-indigo-500 rounded-full border-2 border-[#020617]"></span>
+             </Button>
+             <div className="flex items-center gap-4 pl-4 border-l border-white/10">
+                <div className="text-right hidden sm:block">
+                   <p className="text-sm font-black text-white">Admin Xalima</p>
+                   <p className="text-[10px] text-gray-400 uppercase font-bold tracking-widest">Superutilisateur</p>
+                </div>
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center font-black text-lg border border-indigo-400/30">
+                   X
+                </div>
+             </div>
+          </div>
+        </div>
+
+        <div className="grid lg:grid-cols-5 gap-10">
+          
+          {/* Admin Sidebar */}
+          <div className="lg:col-span-1 space-y-2">
+            {[
+              { id: 'overview', icon: LayoutDashboard, label: "Vue d'ensemble" },
+              { id: 'courses', icon: BookOpen, label: "Gestion Formations" },
+              { id: 'univ_courses', icon: Film, label: "Cours Univ. (Vidéos/PDF)" },
+              { id: 'students', icon: Users, label: "Inscriptions" },
+              { id: 'suggestions', icon: MessageSquare, label: "Suggestions" },
+              { id: 'finance', icon: Wallet, label: "Finances & Revenus" },
+              { id: 'analytics', icon: PieChart, label: "Analytiques" },
+              { id: 'settings', icon: Settings, label: "Paramètres" },
+            ].map((item) => (
+              <button 
+                key={item.id}
+                onClick={() => setActiveTab(item.id)}
+                className={`w-full flex items-center gap-4 px-6 py-4 rounded-[1.25rem] transition-all font-bold group ${
+                  activeTab === item.id 
+                    ? "bg-indigo-600 text-white shadow-xl shadow-indigo-600/20" 
+                    : "text-gray-400 hover:bg-white/5 hover:text-white"
+                }`}
+              >
+                <item.icon className={`w-5 h-5 transition-transform duration-300 group-hover:scale-110 ${activeTab === item.id ? "text-white" : "text-gray-400"}`} />
+                <span className="text-sm">{item.label}</span>
+                {activeTab === item.id && <ChevronRight className="ml-auto w-4 h-4" />}
+              </button>
+            ))}
+
+            <div className="mt-12 p-8 rounded-[2rem] bg-indigo-600/5 border border-indigo-500/10 relative overflow-hidden">
+               <div className="relative z-10 text-center">
+                  <div className="w-12 h-12 rounded-2xl bg-indigo-600 flex items-center justify-center mx-auto mb-4">
+                     <Plus className="w-6 h-6 text-white" />
+                  </div>
+                  <h4 className="font-black text-white mb-2 uppercase tracking-wide text-xs">Nouveau Programme</h4>
+                  <p className="text-[10px] text-gray-400 mb-6 leading-relaxed">Ajoutez une nouvelle formation certifiante au catalogue.</p>
+                  <Button className="w-full bg-indigo-600 h-10 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-700">
+                     Créer
+                  </Button>
+               </div>
+            </div>
+          </div>
+
+          {/* Dynamic Content Area */}
+          <div className="lg:col-span-4 space-y-10">
+            
+            {activeTab === 'overview' && (
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="space-y-10"
+              >
+                {/* Stats Grid */}
+                <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-6">
+                  {stats.map((stat, i) => (
+                    <Card key={i} className="bg-white/5 border-white/10 p-8 rounded-[2rem] hover:border-indigo-500/30 transition-all group overflow-hidden relative">
+                      <div className="absolute -right-4 -bottom-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                         <stat.icon className="w-24 h-24" />
+                      </div>
+                      <div className="relative z-10">
+                        <div className="flex items-center justify-between mb-6">
+                           <div className={`p-3 rounded-2xl bg-white/5 w-fit ${stat.color}`}>
+                              <stat.icon className="w-6 h-6" />
+                           </div>
+                           <Badge className="bg-indigo-500/10 text-indigo-400 border-none text-[10px] font-black">{stat.trend}</Badge>
+                        </div>
+                        <p className="text-3xl font-black mb-1 text-white">{stat.value}</p>
+                        <p className="text-[10px] text-gray-400 font-bold uppercase tracking-[0.2em]">{stat.label}</p>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+
+                <div className="grid xl:grid-cols-2 gap-10">
+                  {/* Recent Activity */}
+                  <div className="bg-[#0c1222] border border-white/10 rounded-[2.5rem] p-10">
+                    <div className="flex items-center justify-between mb-8">
+                       <h3 className="text-xl font-black uppercase tracking-tight text-white">Inscriptions <span className="text-indigo-500">Récentes</span></h3>
+                       <Button variant="ghost" className="text-xs font-bold text-gray-400 hover:text-white">Tout voir</Button>
+                    </div>
+                    <div className="space-y-6">
+                      {recentRegistrations.map((reg) => (
+                        <div key={reg.id} className="flex items-center justify-between p-4 rounded-2xl hover:bg-white/5 transition-all group border border-transparent hover:border-white/5">
+                          <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-xl bg-indigo-600/10 flex items-center justify-center font-bold text-indigo-400 border border-indigo-500/20 group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                              {reg.name.charAt(0)}
+                            </div>
+                            <div>
+                              <p className="font-bold text-white">{reg.name}</p>
+                              <p className="text-[10px] text-gray-400">{reg.course}</p>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                             <p className="font-black text-sm">{reg.amount}</p>
+                             <Badge className={`text-[10px] font-bold border-none px-2 py-0 ${reg.status === 'Payé' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-yellow-500/10 text-yellow-400'}`}>
+                                {reg.status}
+                             </Badge>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* PDF Management Preview */}
+                  <div className="bg-indigo-600/5 border border-indigo-500/10 rounded-[2.5rem] p-10 flex flex-col justify-between">
+                    <div>
+                       <div className="flex items-center gap-3 mb-6">
+                          <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center">
+                             <FileText className="w-5 h-5 text-white" />
+                          </div>
+                          <h3 className="text-xl font-black uppercase tracking-tight">Centre de <span className="text-indigo-500">Ressources</span></h3>
+                       </div>
+                       <p className="text-gray-400 leading-relaxed mb-8">
+                          Gérez vos supports de cours au format PDF. Centralisez vos documents par formation pour un accès étudiant optimisé.
+                       </p>
+                       <div className="grid grid-cols-2 gap-4 mb-8">
+                          <div className="bg-white/5 p-4 rounded-2xl border border-white/5">
+                             <p className="text-2xl font-black text-white">124</p>
+                             <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Supports PDF</p>
+                          </div>
+                          <div className="bg-white/5 p-4 rounded-2xl border border-white/5">
+                             <p className="text-2xl font-black text-white">4.2 GB</p>
+                             <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Espace utilisé</p>
+                          </div>
+                       </div>
+                    </div>
+                    <Button 
+                      className="bg-white text-indigo-600 hover:bg-gray-100 h-14 rounded-2xl font-black uppercase tracking-widest group"
+                      onClick={() => setActiveTab('courses')}
+                    >
+                       Gérer les Ressources
+                       <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    </Button>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {activeTab === 'courses' && (
+              <motion.div 
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="space-y-10"
+              >
+                <div className="flex items-center justify-between">
+                   <h3 className="text-2xl font-black uppercase tracking-tight">Gestion des <span className="text-indigo-500">Formations</span></h3>
+                   <div className="flex gap-4">
+                      <Button variant="outline" className="border-white/10 rounded-xl px-6 h-12 flex gap-2">
+                         <Filter className="w-4 h-4" />
+                         Filtrer
+                      </Button>
+                      <Button className="bg-indigo-600 hover:bg-indigo-700 rounded-xl px-6 h-12 flex gap-2">
+                         <Plus className="w-4 h-4" />
+                         Ajouter
+                      </Button>
+                   </div>
+                </div>
+
+                <div className="bg-[#0c1222] border border-white/10 rounded-[2.5rem] overflow-hidden">
+                   <table className="w-full text-left">
+                      <thead>
+                         <tr className="border-b border-white/10">
+                            <th className="px-8 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Programme</th>
+                            <th className="px-8 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Étudiants</th>
+                            <th className="px-8 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Revenu</th>
+                            <th className="px-8 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">PDFs</th>
+                            <th className="px-8 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Statut</th>
+                            <th className="px-8 py-6"></th>
+                         </tr>
+                      </thead>
+                      <tbody className="divide-y divide-white/5">
+                         {courses.map((course) => (
+                            <tr key={course.id} className="hover:bg-white/5 transition-colors group">
+                               <td className="px-8 py-6 font-bold text-white">{course.title}</td>
+                               <td className="px-8 py-6 font-medium text-gray-300">{course.enrollments}</td>
+                               <td className="px-8 py-6 font-black text-indigo-400">{course.revenue}</td>
+                               <td className="px-8 py-6">
+                                  <div className="flex items-center gap-2">
+                                     <Badge className="bg-white/5 border-white/10 text-xs py-1 px-3 flex gap-2">
+                                        <FileText className="w-3.5 h-3.5" />
+                                        {course.pdfs}
+                                     </Badge>
+                                     <button 
+                                       onClick={() => setIsAddingPDF(true)}
+                                       className="w-8 h-8 rounded-lg bg-indigo-600/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-indigo-600 text-indigo-400 hover:text-white"
+                                     >
+                                        <Plus className="w-4 h-4" />
+                                     </button>
+                                  </div>
+                               </td>
+                               <td className="px-8 py-6">
+                                  <div className="flex items-center gap-2">
+                                     <div className={`w-2 h-2 rounded-full ${course.status === 'Actif' ? 'bg-emerald-500' : 'bg-yellow-500'}`} />
+                                     <span className="text-xs font-bold">{course.status}</span>
+                                  </div>
+                               </td>
+                               <td className="px-8 py-6 text-right">
+                                  <button className="text-gray-500 hover:text-white"><MoreVertical className="w-5 h-5" /></button>
+                               </td>
+                            </tr>
+                         ))}
+                      </tbody>
+                   </table>
+                </div>
+
+                {/* Simulated PDF Upload Area */}
+                <div className="p-12 border-2 border-dashed border-white/10 rounded-[3rem] text-center space-y-4 hover:border-indigo-500/20 transition-all">
+                   <div className="w-20 h-20 bg-white/5 rounded-3xl flex items-center justify-center mx-auto mb-4">
+                      <Download className="w-10 h-10 text-gray-500" />
+                   </div>
+                   <h4 className="text-xl font-black uppercase tracking-tight text-white">Déposez vos PDFs ici</h4>
+                   <p className="text-gray-400 max-w-sm mx-auto text-sm">Sélectionner des fichiers pour les associer automatiquement à vos programmes de formation.</p>
+                   <Button className="bg-white/5 border border-white/10 hover:bg-white/10 text-white px-8 rounded-xl h-12 uppercase font-black tracking-widest text-xs">
+                       Parcourir les fichiers
+                   </Button>
+                </div>
+              </motion.div>
+            )}
+
+            {activeTab === 'univ_courses' && (
+              <motion.div 
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="space-y-10"
+              >
+                <div className="flex items-center justify-between">
+                   <h3 className="text-2xl font-black uppercase tracking-tight">Cours <span className="text-indigo-500">Universitaires</span></h3>
+                   <div className="flex gap-4">
+                      <Button className="bg-indigo-600 hover:bg-indigo-700 rounded-xl px-6 h-12 flex gap-2" onClick={() => setIsAddingUnivCourse(true)}>
+                         <Plus className="w-4 h-4" />
+                         Ajouter un Cours
+                      </Button>
+                   </div>
+                </div>
+
+                <div className="bg-[#0c1222] border border-white/10 rounded-[2.5rem] overflow-hidden">
+                   <table className="w-full text-left">
+                      <thead>
+                         <tr className="border-b border-white/10">
+                            <th className="px-8 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Titre du Cours</th>
+                            <th className="px-8 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Faculté</th>
+                            <th className="px-8 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Type</th>
+                            <th className="px-8 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Ajouté le</th>
+                            <th className="px-8 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Statut</th>
+                         </tr>
+                      </thead>
+                      <tbody className="divide-y divide-white/5">
+                         {localStorageUnivCourses.length === 0 ? (
+                           <tr>
+                              <td colSpan={5} className="py-12 text-center text-gray-500 italic">Aucun cours universitaire ajouté pour le moment. Cliquez sur "Ajouter un Cours".</td>
+                           </tr>
+                         ) : (
+                           localStorageUnivCourses.map((course) => (
+                              <tr key={course.id} className="hover:bg-white/5 transition-colors group">
+                                 <td className="px-8 py-6 font-bold text-white max-w-[250px] truncate">{course.title}</td>
+                                 <td className="px-8 py-6 font-medium text-gray-300">{course.category}</td>
+                                 <td className="px-8 py-6">
+                                    <Badge className={`${course.type === 'video' ? 'bg-indigo-500/10 text-indigo-400' : 'bg-rose-500/10 text-rose-400'} border-none text-[10px] font-bold uppercase tracking-widest flex items-center w-fit gap-1.5`}>
+                                       {course.type === 'video' ? <Video className="w-3 h-3" /> : <FileText className="w-3 h-3" />}
+                                       {course.type}
+                                    </Badge>
+                                 </td>
+                                 <td className="px-8 py-6 font-medium text-gray-400 text-sm">{course.date}</td>
+                                 <td className="px-8 py-6">
+                                    <div className="flex items-center gap-2">
+                                       <div className={`w-2 h-2 rounded-full ${course.status === 'Publié' ? 'bg-emerald-500' : 'bg-yellow-500'}`} />
+                                       <span className="text-xs font-bold">{course.status}</span>
+                                    </div>
+                                 </td>
+                              </tr>
+                           ))
+                         )}
+                      </tbody>
+                   </table>
+                </div>
+              </motion.div>
+            )}
+
+            {activeTab === 'students' && (
+              <motion.div 
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="space-y-10"
+              >
+                 <div className="flex items-center justify-between">
+                   <h3 className="text-2xl font-black uppercase tracking-tight">Inscriptions <span className="text-indigo-500">Récentes</span></h3>
+                   <div className="flex gap-4">
+                      <Button variant="outline" className="border-white/10 rounded-xl px-6 h-12 flex gap-2">
+                         <Download className="w-4 h-4" />
+                         Exporter CSV
+                      </Button>
+                   </div>
+                </div>
+
+                <div className="bg-[#0c1222] border border-white/10 rounded-[2.5rem] overflow-hidden">
+                   <table className="w-full text-left">
+                      <thead>
+                         <tr className="border-b border-white/10">
+                            <th className="px-8 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Apprenant</th>
+                            <th className="px-8 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Programme</th>
+                            <th className="px-8 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Date</th>
+                            <th className="px-8 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Montant</th>
+                            <th className="px-8 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Statut</th>
+                            <th className="px-8 py-6"></th>
+                         </tr>
+                      </thead>
+                      <tbody className="divide-y divide-white/5">
+                         {recentRegistrations.map((reg, i) => (
+                            <tr key={i} className="hover:bg-white/5 transition-colors group">
+                               <td className="px-8 py-6">
+                                  <div className="flex items-center gap-4">
+                                     <div className="w-10 h-10 rounded-xl bg-indigo-600/10 border border-indigo-500/20 flex items-center justify-center font-bold text-indigo-400">
+                                        {reg.name.charAt(0)}
+                                     </div>
+                                     <div>
+                                         <p className="font-bold text-white">{reg.name}</p>
+                                         <p className="text-[10px] text-gray-400 uppercase font-bold tracking-widest">ID: #XAL-{reg.id.toString().slice(-4)}</p>
+                                     </div>
+                                  </div>
+                               </td>
+                               <td className="px-8 py-6 font-medium text-gray-300 text-sm">
+                                  {reg.course}
+                               </td>
+                               <td className="px-8 py-6 text-xs text-gray-400 font-bold uppercase tracking-widest">
+                                  {reg.date}
+                               </td>
+                               <td className="px-8 py-6 font-black text-white">
+                                  {reg.amount}
+                               </td>
+                               <td className="px-8 py-6">
+                                  <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${
+                                    reg.status === 'Payé' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-yellow-500/10 text-yellow-400'
+                                  }`}>
+                                     {reg.status === 'Payé' ? <CheckCircle2 className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
+                                     {reg.status}
+                                  </div>
+                               </td>
+                               <td className="px-8 py-6 text-right">
+                                  <button className="text-gray-400 hover:text-white"><Filter className="w-4 h-4" /></button>
+                               </td>
+                            </tr>
+                         ))}
+                      </tbody>
+                   </table>
+                </div>
+              </motion.div>
+            )}
+
+          </div>
+        </div>
+      </div>
+
+      {/* Simulated PDF Tool Modal */}
+      <AnimatePresence>
+         {isAddingPDF && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center px-4">
+               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={() => setIsAddingPDF(false)} />
+               <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="relative w-full max-w-xl bg-[#020617] border border-white/10 rounded-[3rem] overflow-hidden p-12">
+                  <div className="flex justify-between items-center mb-10">
+                     <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-2xl bg-indigo-600 flex items-center justify-center">
+                           <FileText className="w-6 h-6 text-white" />
+                        </div>
+                        <div>
+                           <h3 className="text-2xl font-black uppercase tracking-tight">Ajouter <span className="text-indigo-500">un Support</span></h3>
+                           <p className="text-gray-400 text-xs font-bold uppercase tracking-widest">Formation : Full Stack Web</p>
+                        </div>
+                     </div>
+                     <button onClick={() => setIsAddingPDF(false)}>
+                        <X className="w-6 h-6 text-gray-400 hover:text-white" />
+                     </button>
+                  </div>
+
+                  <div className="space-y-8">
+                     <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-indigo-400">Nom du Document</label>
+                        <Input className="bg-white/5 border-white/10 rounded-2xl h-14" placeholder="Ex: Introduction aux React Hooks.pdf" />
+                     </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div className="space-y-3">
+                           <label className="text-[10px] font-black uppercase tracking-widest text-indigo-400">Type de Ressource</label>
+                           <select className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl px-4 text-sm text-gray-300 focus:border-indigo-500 focus:outline-none">
+                              <option value="formation">Formation Payante</option>
+                              <option value="univ">Cours Universitaire</option>
+                           </select>
+                        </div>
+                        <div className="space-y-3">
+                           <label className="text-[10px] font-black uppercase tracking-widest text-indigo-400">Niveau d'étude</label>
+                           <select className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl px-4 text-sm text-gray-300 focus:border-indigo-500 focus:outline-none">
+                              <option value="L1">Licence 1</option>
+                              <option value="L2">Licence 2</option>
+                              <option value="L3">Licence 3</option>
+                              <option value="M1">Master 1</option>
+                              <option value="M2">Master 2</option>
+                           </select>
+                        </div>
+                      </div>
+
+                      <div className="space-y-3">
+                         <label className="text-[10px] font-black uppercase tracking-widest text-indigo-400">Filière / Département</label>
+                         <select className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl px-4 text-sm text-gray-300 focus:border-indigo-500 focus:outline-none">
+                            <option value="geo">Géographie</option>
+                            <option value="hist">Histoire</option>
+                            <option value="droit">Droit</option>
+                            <option value="tech">Informatique</option>
+                            <option value="eco">Économie</option>
+                            <option value="gestion">Gestion</option>
+                         </select>
+                      </div>
+
+                      <div className="space-y-3">
+                         <label className="text-[10px] font-black uppercase tracking-widest text-indigo-400">Lien du Fichier (Simulé)</label>
+                         <Input className="bg-white/5 border-white/10 rounded-2xl h-14 text-white placeholder:text-gray-500" placeholder="https://cdn.xalima.sn/courses/pdf/..." />
+                      </div>
+                     
+                     <div className="flex items-center gap-4 p-6 bg-indigo-600/10 border border-indigo-500/20 rounded-2xl">
+                        <AlertCircle className="w-6 h-6 text-indigo-500 shrink-0" />
+                        <p className="text-[11px] text-gray-400 leading-relaxed font-bold italic">
+                           Ce document sera immédiatement disponible pour tous les étudiants inscrits à ce module dans leur espace d'apprentissage.
+                        </p>
+                     </div>
+
+                     <div className="flex gap-4">
+                        <Button variant="outline" className="flex-grow h-16 rounded-2xl border-white/10 text-white font-black uppercase tracking-widest" onClick={() => setIsAddingPDF(false)}>Annuler</Button>
+                        <Button className="flex-grow h-16 rounded-2xl bg-indigo-600 text-white font-black uppercase tracking-widest shadow-xl shadow-indigo-600/20" onClick={() => setIsAddingPDF(false)}>Enregistrer</Button>
+                     </div>
+                  </div>
+               </motion.div>
+            </div>
+         )}
+      </AnimatePresence>
+
+      {/* University Course Modal */}
+      <AnimatePresence>
+         {isAddingUnivCourse && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center px-4">
+               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={() => setIsAddingUnivCourse(false)} />
+               <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="relative w-full max-w-xl bg-[#020617] border border-white/10 rounded-[3rem] overflow-hidden p-12 max-h-[90vh] overflow-y-auto">
+                  <div className="flex justify-between items-center mb-10">
+                     <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-2xl bg-indigo-600 flex items-center justify-center">
+                           <Film className="w-6 h-6 text-white" />
+                        </div>
+                        <div>
+                           <h3 className="text-xl font-black uppercase tracking-tight">Ajouter <span className="text-indigo-500">Un Cours</span></h3>
+                           <p className="text-gray-400 text-[10px] font-bold uppercase tracking-widest">Section Universitaire</p>
+                        </div>
+                     </div>
+                     <button onClick={() => setIsAddingUnivCourse(false)}>
+                        <X className="w-6 h-6 text-gray-400 hover:text-white" />
+                     </button>
+                  </div>
+
+                  <div className="space-y-6">
+                     <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-indigo-400">Titre du Cours</label>
+                        <Input 
+                           value={newUnivCourse.title}
+                           onChange={(e) => setNewUnivCourse({...newUnivCourse, title: e.target.value})}
+                           className="bg-white/5 border-white/10 rounded-2xl h-14" 
+                           placeholder="Ex: Analyse Mathématique L1" 
+                        />
+                     </div>
+                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div className="space-y-3">
+                           <label className="text-[10px] font-black uppercase tracking-widest text-indigo-400">Type de Contenu</label>
+                           <select 
+                              value={newUnivCourse.type}
+                              onChange={(e) => setNewUnivCourse({...newUnivCourse, type: e.target.value})}
+                              className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl px-4 text-sm text-gray-300 focus:border-indigo-500 focus:outline-none"
+                           >
+                              <option value="video">Vidéo (MP4 / YouTube)</option>
+                              <option value="pdf">Document PDF</option>
+                           </select>
+                        </div>
+                        <div className="space-y-3">
+                           <label className="text-[10px] font-black uppercase tracking-widest text-indigo-400">Faculté</label>
+                           <select 
+                              value={newUnivCourse.faculty}
+                              onChange={(e) => setNewUnivCourse({...newUnivCourse, faculty: e.target.value})}
+                              className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl px-4 text-sm text-gray-300 focus:border-indigo-500 focus:outline-none"
+                           >
+                              <option value="Mathématiques">Mathématiques</option>
+                              <option value="Informatique">Informatique</option>
+                              <option value="Droit">Droit</option>
+                              <option value="Médecine">Médecine</option>
+                              <option value="Histoire">Histoire</option>
+                              <option value="Gestion">Gestion</option>
+                           </select>
+                        </div>
+                     </div>
+
+                     <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-indigo-400">Lien du fichier (URL)</label>
+                        <Input 
+                           value={newUnivCourse.url}
+                           onChange={(e) => setNewUnivCourse({...newUnivCourse, url: e.target.value})}
+                           className="bg-white/5 border-white/10 rounded-2xl h-14 text-white placeholder:text-gray-500" 
+                           placeholder="https://... (Lien de la vidéo ou du PDF)" 
+                        />
+                     </div>
+
+                     {newUnivCourse.type === 'video' ? (
+                        <div className="space-y-3">
+                           <label className="text-[10px] font-black uppercase tracking-widest text-indigo-400">Durée estimée</label>
+                           <Input 
+                              value={newUnivCourse.duration}
+                              onChange={(e) => setNewUnivCourse({...newUnivCourse, duration: e.target.value})}
+                              className="bg-white/5 border-white/10 rounded-2xl h-14 text-white placeholder:text-gray-500" 
+                              placeholder="Ex: 45 min" 
+                           />
+                        </div>
+                     ) : (
+                        <div className="space-y-3">
+                           <label className="text-[10px] font-black uppercase tracking-widest text-indigo-400">Nombre de pages</label>
+                           <Input 
+                              type="number"
+                              value={newUnivCourse.pages}
+                              onChange={(e) => setNewUnivCourse({...newUnivCourse, pages: e.target.value})}
+                              className="bg-white/5 border-white/10 rounded-2xl h-14 text-white placeholder:text-gray-500" 
+                              placeholder="Ex: 120" 
+                           />
+                        </div>
+                     )}
+
+                     <div className="flex items-center gap-4 p-6 bg-indigo-600/10 border border-indigo-500/20 rounded-2xl mt-4">
+                        <AlertCircle className="w-6 h-6 text-indigo-500 shrink-0" />
+                        <p className="text-[11px] text-gray-400 leading-relaxed font-bold italic">
+                           En enregistrant, ce cours sera visible sur la plateforme publique pour les étudiants des facultés correspondantes.
+                        </p>
+                     </div>
+
+                     <div className="flex gap-4 pt-4">
+                        <Button variant="outline" className="flex-grow h-16 rounded-2xl border-white/10 text-white font-black uppercase tracking-widest" onClick={() => setIsAddingUnivCourse(false)}>Annuler</Button>
+                        <Button 
+                           className="flex-grow h-16 rounded-2xl bg-indigo-600 text-white font-black uppercase tracking-widest shadow-xl shadow-indigo-600/20" 
+                           onClick={handleSaveUnivCourse}
+                           disabled={!newUnivCourse.title || !newUnivCourse.url}
+                        >
+                           Publier le Cours
+                        </Button>
+                     </div>
+                  </div>
+               </motion.div>
+            </div>
+         )}
+      </AnimatePresence>
+    </div>
+  );
+}

@@ -1,0 +1,118 @@
+import React from 'react';
+import { motion } from 'framer-motion';
+import { GraduationCap, Send, Mail, User, BookOpen, MessageSquare, Sparkles } from 'lucide-react';
+import { Button } from '../components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import { ImageWithFallback } from '../components/figma/ImageWithFallback';
+
+export default function SuggestCourse() {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Simulate form submission
+    alert('Merci pour votre suggestion ! Nous l\'examinerons prochainement.');
+  };
+
+  return (
+    <div className="min-h-screen bg-[#020617] text-white pt-32 pb-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      {/* Background Decor */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-[10%] left-[10%] w-[50%] h-[50%] bg-indigo-600/5 blur-[120px] rounded-full"></div>
+        <div className="absolute bottom-[10%] right-[10%] w-[50%] h-[50%] bg-blue-600/5 blur-[120px] rounded-full"></div>
+      </div>
+
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="max-w-3xl mx-auto relative z-10"
+      >
+        <div className="text-center mb-16">
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            className="inline-flex items-center justify-center p-3 bg-indigo-600/10 rounded-xl mb-8"
+          >
+            <Sparkles className="h-6 w-6 text-indigo-400" />
+          </motion.div>
+          
+          <h1 className="text-5xl sm:text-6xl font-black mb-8 leading-[0.95] tracking-[0.02em] uppercase">
+            Aidez-nous à <br />
+            <span className="text-indigo-500">façonner l'avenir</span>.
+          </h1>
+          
+          <p className="text-lg sm:text-xl text-gray-400 leading-relaxed font-normal mb-8">
+            Vous avez une idée de cours qui pourrait changer des vies ? Partagez-la avec nous et contribuons ensemble à l'excellence au Sénégal.
+          </p>
+        </div>
+
+        <Card className="bg-white/5 border border-white/10 backdrop-blur-xl rounded-[2.5rem] shadow-2xl overflow-hidden">
+          <CardHeader className="p-10 border-b border-white/5">
+            <CardTitle className="text-2xl font-black uppercase tracking-tight text-white text-center">Votre Suggestion</CardTitle>
+          </CardHeader>
+          <CardContent className="p-10">
+            <form onSubmit={handleSubmit} className="space-y-8">
+              <div className="grid md:grid-cols-2 gap-8">
+                <div className="space-y-3">
+                  <label className="text-[10px] uppercase tracking-widest font-bold text-gray-500 flex items-center gap-2">
+                    <User className="h-3.5 w-3.5 text-indigo-400" /> Nom Complet
+                  </label>
+                  <input 
+                    type="text" 
+                    required 
+                    placeholder="Votre nom"
+                    className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white focus:border-indigo-500 font-bold outline-none transition-all"
+                  />
+                </div>
+                <div className="space-y-3">
+                  <label className="text-[10px] uppercase tracking-widest font-bold text-gray-500 flex items-center gap-2">
+                    <Mail className="h-3.5 w-3.5 text-indigo-400" /> Email Professionnel
+                  </label>
+                  <input 
+                    type="email" 
+                    required 
+                    placeholder="votre@email.com"
+                    className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white focus:border-indigo-500 font-bold outline-none transition-all"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <label className="text-[10px] uppercase tracking-widest font-bold text-gray-500 flex items-center gap-2">
+                  <BookOpen className="h-3.5 w-3.5 text-indigo-400" /> Titre du Cours Suggéré
+                </label>
+                <input 
+                  type="text" 
+                  required 
+                  placeholder="Ex: Intelligence Artificielle au Sénégal"
+                  className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white focus:border-indigo-500 font-bold outline-none transition-all"
+                />
+              </div>
+
+              <div className="space-y-3">
+                <label className="text-[10px] uppercase tracking-widest font-bold text-gray-500 flex items-center gap-2">
+                  <MessageSquare className="h-3.5 w-3.5 text-indigo-400" /> Pourquoi ce cours est important ?
+                </label>
+                <textarea 
+                  required 
+                  rows={4}
+                  placeholder="Décrivez brièvement l'impact attendu..."
+                  className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white focus:border-indigo-500 font-bold outline-none transition-all resize-none"
+                />
+              </div>
+
+              <Button 
+                type="submit" 
+                className="w-full h-16 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-lg uppercase tracking-widest rounded-xl transition-all active:scale-95 flex items-center justify-center gap-3"
+              >
+                <Send className="h-5 w-5" /> ENVOYER
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+
+        <div className="mt-16 text-center text-gray-600 text-[10px] font-bold uppercase tracking-[0.3em]">
+          <p>© 2026 XALIMA. L'EXCELLENCE SÉNÉGALAISE.</p>
+        </div>
+      </motion.div>
+    </div>
+  );
+}
