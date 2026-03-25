@@ -13,69 +13,83 @@ import { Card } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
 import { useState, useEffect } from 'react';
+import { supabase } from '../../lib/supabase';
+import { useAuth } from '../../context/AuthContext';
 
 export function AdminDashboard() {
+  const { signOut, user } = useAuth();
   const [activeTab, setActiveTab] = useState('overview');
   const [isAddingPDF, setIsAddingPDF] = useState(false);
   const [isAddingUnivCourse, setIsAddingUnivCourse] = useState(false);
-  const [localStorageRegistrations, setLocalStorageRegistrations] = useState<any[]>([]);
-  const [localStorageUnivCourses, setLocalStorageUnivCourses] = useState<any[]>([]);
+  
+  const [dbRegistrations, setDbRegistrations] = useState<any[]>([]);
+  const [dbUnivCourses, setDbUnivCourses] = useState<any[]>([]);
+  const [dbFormations, setDbFormations] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
   const [newUnivCourse, setNewUnivCourse] = useState({
     title: '', faculty: 'Mathématiques', type: 'video', url: '', duration: '', pages: ''
   });
 
   useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem('xalima_registrations') || '[]');
-    setLocalStorageRegistrations(saved);
-    const savedUniv = JSON.parse(localStorage.getItem('xalima_univ_courses') || '[]');
-    setLocalStorageUnivCourses(savedUniv);
+    fetchData();
   }, []);
 
-  const handleSaveUnivCourse = () => {
-    const course = {
-      id: Date.now(),
-      title: newUnivCourse.title,
-      category: newUnivCourse.faculty,
-      type: newUnivCourse.type,
-      url: newUnivCourse.url,
-      duration: newUnivCourse.type === 'video' ? (newUnivCourse.duration || 'N/A') : undefined,
-      pages: newUnivCourse.type === 'pdf' ? (parseInt(newUnivCourse.pages) || 0) : undefined,
-      status: 'Publié',
-      date: new Date().toLocaleDateString('fr-FR')
-    };
-    const updated = [...localStorageUnivCourses, course];
-    setLocalStorageUnivCourses(updated);
-    localStorage.setItem('xalima_univ_courses', JSON.stringify(updated));
-    setIsAddingUnivCourse(false);
-    setNewUnivCourse({ title: '', faculty: 'Mathématiques', type: 'video', url: '', duration: '', pages: '' });
+  async function fetchData() {
+    setIsLoading(true);
+    
+    // Fetch registrations
+    const { data: regs } = await supabase.from('registrations').select('*').order('created_at', { ascending: false });
+    if (regs) setDbRegistrations(regs);
+
+    // Fetch university courses
+    const { data: univ } = await supabase.from('courses_university').select('*').order('id', { ascending: false });
+    if (univ) setDbUnivCourses(univ);
+
+    // Fetch formations
+    const { data: forms } = await supabase.from('formations').select('*').order('id', { ascending: false });
+    if (forms) setDbFormations(forms);
+
+    setIsLoading(false);
+  }
+
+  const handleSaveUnivCourse = async () => {
+    const { error } = await supabase.from('courses_university').insert([
+      {
+        title: newUnivCourse.title,
+        faculty: newUnivCourse.faculty,
+        type: newUnivCourse.type,
+        url: newUnivCourse.url,
+        duration: newUnivCourse.type === 'video' ? (newUnivCourse.duration || 'N/A') : null,
+        pages: newUnivCourse.type === 'pdf' ? (parseInt(newUnivCourse.pages) || 0) : null,
+      }
+    ]);
+
+    if (error) {
+      alert('Erreur lors de l\'ajout : ' + error.message);
+    } else {
+      setIsAddingUnivCourse(false);
+      setNewUnivCourse({ title: '', faculty: 'Mathématiques', type: 'video', url: '', duration: '', pages: '' });
+      fetchData();
+    }
   };
 
   const stats = [
-    { label: "Revenu Total", value: "2.450.000 FCFA", icon: Wallet, color: "text-emerald-400", trend: "+12%" },
-    { label: "Étudiants Actifs", value: (1248 + localStorageRegistrations.length).toLocaleString(), icon: Users, color: "text-blue-400", trend: "+5%" },
-    { label: "Formations", value: "26", icon: BookOpen, color: "text-indigo-400", trend: "Stable" },
-    { label: "Taux de Réussite", value: "94%", icon: TrendingUp, color: "text-purple-400", trend: "+2%" },
+    { label: "Inscriptions", value: dbRegistrations.length.toString(), icon: Users, color: "text-blue-400", trend: "+5%" },
+    { label: "Cours Univ.", value: dbUnivCourses.length.toString(), icon: Film, color: "text-indigo-400", trend: "Stable" },
+    { label: "Formations", value: dbFormations.length.toString(), icon: BookOpen, color: "text-purple-400", trend: "Stable" },
+    { label: "Revenu Est.", value: (dbRegistrations.filter(r => r.status === 'Payé').length * 50000).toLocaleString() + " FCFA", icon: Wallet, color: "text-emerald-400", trend: "+12%" },
   ];
 
-  const mockRegistrations = [
-    { id: 1, name: "Amadou Diallo", email: "amadou@email.sn", course: "Full Stack Web", date: "Il y a 2h", amount: "65.000 FCFA", status: "Payé" },
-    { id: 2, name: "Awa Ndiaye", email: "awa@email.sn", course: "Marketing Digital", date: "Il y a 5h", amount: "45.000 FCFA", status: "En attente" },
-    { id: 3, name: "Moussa Sow", email: "moussa@email.sn", course: "UX/UI Design", date: "Hier", amount: "50.000 FCFA", status: "Payé" },
-    { id: 4, name: "Fatou Diop", email: "fatou@email.sn", course: "Agrobusiness", date: "Hier", amount: "40.000 FCFA", status: "Payé" },
-  ];
-
-  const recentRegistrations = [
-    ...localStorageRegistrations.map(reg => ({
-      id: reg.id,
-      name: reg.name,
-      email: reg.email,
-      course: reg.interest || "Non spécifié",
-      date: reg.date,
-      amount: "À définir",
-      status: reg.status
-    })),
-    ...mockRegistrations
-  ].slice(0, 10);
+  const recentRegistrations = dbRegistrations.slice(0, 10).map(reg => ({
+    id: reg.id,
+    name: reg.full_name,
+    email: reg.email,
+    course: reg.course_id ? `Formation #${reg.course_id}` : "Non spécifié",
+    date: new Date(reg.created_at).toLocaleDateString('fr-FR'),
+    amount: "À définir",
+    status: reg.status || "En attente"
+  }));
 
   const courses = [
     { id: 1, title: "Développement Web Full Stack", enrollments: 145, revenue: "9.425.000 FCFA", pdfs: 12, status: "Actif" },
@@ -111,11 +125,11 @@ export function AdminDashboard() {
              </Button>
              <div className="flex items-center gap-4 pl-4 border-l border-white/10">
                 <div className="text-right hidden sm:block">
-                   <p className="text-sm font-black text-white">Admin Xalima</p>
-                   <p className="text-[10px] text-gray-400 uppercase font-bold tracking-widest">Superutilisateur</p>
+                   <p className="text-sm font-black text-white">{user?.email?.split('@')[0] || 'Admin'}</p>
+                   <p className="text-[10px] text-gray-400 uppercase font-bold tracking-widest cursor-pointer hover:text-red-400 transition-colors" onClick={signOut}>Déconnexion</p>
                 </div>
                 <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center font-black text-lg border border-indigo-400/30">
-                   X
+                   {user?.email?.charAt(0).toUpperCase() || 'A'}
                 </div>
              </div>
           </div>
@@ -292,29 +306,23 @@ export function AdminDashboard() {
                          </tr>
                       </thead>
                       <tbody className="divide-y divide-white/5">
-                         {courses.map((course) => (
+                         {dbFormations.map((course) => (
                             <tr key={course.id} className="hover:bg-white/5 transition-colors group">
                                <td className="px-8 py-6 font-bold text-white">{course.title}</td>
-                               <td className="px-8 py-6 font-medium text-gray-300">{course.enrollments}</td>
-                               <td className="px-8 py-6 font-black text-indigo-400">{course.revenue}</td>
+                               <td className="px-8 py-6 font-medium text-gray-300">0</td>
+                               <td className="px-8 py-6 font-black text-indigo-400">{course.price} FCFA</td>
                                <td className="px-8 py-6">
                                   <div className="flex items-center gap-2">
                                      <Badge className="bg-white/5 border-white/10 text-xs py-1 px-3 flex gap-2">
                                         <FileText className="w-3.5 h-3.5" />
-                                        {course.pdfs}
+                                        0
                                      </Badge>
-                                     <button 
-                                       onClick={() => setIsAddingPDF(true)}
-                                       className="w-8 h-8 rounded-lg bg-indigo-600/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-indigo-600 text-indigo-400 hover:text-white"
-                                     >
-                                        <Plus className="w-4 h-4" />
-                                     </button>
                                   </div>
                                </td>
                                <td className="px-8 py-6">
                                   <div className="flex items-center gap-2">
-                                     <div className={`w-2 h-2 rounded-full ${course.status === 'Actif' ? 'bg-emerald-500' : 'bg-yellow-500'}`} />
-                                     <span className="text-xs font-bold">{course.status}</span>
+                                     <div className={`w-2 h-2 rounded-full bg-emerald-500`} />
+                                     <span className="text-xs font-bold">Actif</span>
                                   </div>
                                </td>
                                <td className="px-8 py-6 text-right">
@@ -368,30 +376,30 @@ export function AdminDashboard() {
                          </tr>
                       </thead>
                       <tbody className="divide-y divide-white/5">
-                         {localStorageUnivCourses.length === 0 ? (
-                           <tr>
-                              <td colSpan={5} className="py-12 text-center text-gray-500 italic">Aucun cours universitaire ajouté pour le moment. Cliquez sur "Ajouter un Cours".</td>
-                           </tr>
+                         {dbUnivCourses.length === 0 ? (
+                            <tr>
+                               <td colSpan={5} className="py-12 text-center text-gray-500 italic">Aucun cours universitaire ajouté pour le moment. Cliquez sur "Ajouter un Cours".</td>
+                            </tr>
                          ) : (
-                           localStorageUnivCourses.map((course) => (
-                              <tr key={course.id} className="hover:bg-white/5 transition-colors group">
-                                 <td className="px-8 py-6 font-bold text-white max-w-[250px] truncate">{course.title}</td>
-                                 <td className="px-8 py-6 font-medium text-gray-300">{course.category}</td>
-                                 <td className="px-8 py-6">
-                                    <Badge className={`${course.type === 'video' ? 'bg-indigo-500/10 text-indigo-400' : 'bg-rose-500/10 text-rose-400'} border-none text-[10px] font-bold uppercase tracking-widest flex items-center w-fit gap-1.5`}>
-                                       {course.type === 'video' ? <Video className="w-3 h-3" /> : <FileText className="w-3 h-3" />}
-                                       {course.type}
-                                    </Badge>
-                                 </td>
-                                 <td className="px-8 py-6 font-medium text-gray-400 text-sm">{course.date}</td>
-                                 <td className="px-8 py-6">
-                                    <div className="flex items-center gap-2">
-                                       <div className={`w-2 h-2 rounded-full ${course.status === 'Publié' ? 'bg-emerald-500' : 'bg-yellow-500'}`} />
-                                       <span className="text-xs font-bold">{course.status}</span>
-                                    </div>
-                                 </td>
-                              </tr>
-                           ))
+                            dbUnivCourses.map((course) => (
+                               <tr key={course.id} className="hover:bg-white/5 transition-colors group">
+                                  <td className="px-8 py-6 font-bold text-white max-w-[250px] truncate">{course.title}</td>
+                                  <td className="px-8 py-6 font-medium text-gray-300">{course.faculty}</td>
+                                  <td className="px-8 py-6">
+                                     <Badge className={`${course.type === 'video' ? 'bg-indigo-500/10 text-indigo-400' : 'bg-rose-500/10 text-rose-400'} border-none text-[10px] font-bold uppercase tracking-widest flex items-center w-fit gap-1.5`}>
+                                        {course.type === 'video' ? <Video className="w-3 h-3" /> : <FileText className="w-3 h-3" />}
+                                        {course.type}
+                                     </Badge>
+                                  </td>
+                                  <td className="px-8 py-6 font-medium text-gray-400 text-sm">{new Date(course.created_at).toLocaleDateString('fr-FR')}</td>
+                                  <td className="px-8 py-6">
+                                     <div className="flex items-center gap-2">
+                                        <div className={`w-2 h-2 rounded-full bg-emerald-500`} />
+                                        <span className="text-xs font-bold">Publié</span>
+                                     </div>
+                                  </td>
+                               </tr>
+                            ))
                          )}
                       </tbody>
                    </table>

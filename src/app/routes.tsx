@@ -7,7 +7,9 @@ import SuggestCourse from './pages/SuggestCourse';
 import { EspaceApprentissage } from './pages/EspaceApprentissage';
 import { Register } from './pages/Register';
 import { AdminDashboard } from './pages/AdminDashboard';
+import { Login } from './pages/Login';
 import { Layout } from './components/Layout';
+import { ProtectedRoute } from './components/ProtectedRoute';
 
 export const router = createBrowserRouter([
   {
@@ -20,7 +22,11 @@ export const router = createBrowserRouter([
       { path: 'contact', Component: Contact },
       { path: 'suggerer-cours', Component: SuggestCourse },
       { path: 'dashboard', Component: EspaceApprentissage },
-      { path: 'admin', Component: AdminDashboard },
+      { 
+        path: 'admin', 
+        element: <ProtectedRoute><AdminDashboard /></ProtectedRoute> 
+      },
+      { path: 'login', Component: Login },
       { path: 'register', Component: Register },
     ],
   },

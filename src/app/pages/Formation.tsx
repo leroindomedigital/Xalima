@@ -11,12 +11,63 @@ import {
 import { Link, useNavigate } from 'react-router';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { supabase } from '../../lib/supabase';
 
 export function Formation() {
   const navigate = useNavigate();
-  const formations = [
-    // Formations Courtes et Intermédiaires
+  const [dynamicFormations, setDynamicFormations] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const iconMap: Record<string, any> = {
+    'TrendingUp': TrendingUp,
+    'Code': Code,
+    'Briefcase': Briefcase,
+    'FileText': FileText,
+    'Palette': Palette,
+    'Globe': Globe,
+    'Smartphone': Smartphone,
+    'Video': Video,
+    'Users2': Users2,
+    'Leaf': Leaf,
+    'Truck': Truck,
+    'Sun': Sun,
+    'BarChart3': BarChart3,
+    'ShieldCheck': ShieldCheck,
+    'Database': Database,
+    'Cpu': Cpu,
+    'Coins': Coins,
+    'LineChart': LineChart,
+    'Sprout': Sprout,
+    'Network': Network
+  };
+
+  useEffect(() => {
+    async function fetchFormations() {
+      setIsLoading(true);
+      const { data, error } = await supabase
+        .from('formations')
+        .select('*')
+        .order('id', { ascending: true });
+
+      if (error) {
+        console.error('Error fetching formations:', error.message);
+      } else if (data) {
+        const mapped = data.map(f => ({
+          ...f,
+          icon: iconMap[f.icon_name] || GraduationCap, // Fallback icon
+          certification: true, // Defaulting for now
+          type: f.level === 'Master' ? 'Master' : (f.level === 'Spécialisation' ? 'Spécialisation' : 'Formation')
+        }));
+        setDynamicFormations(mapped);
+      }
+      setIsLoading(false);
+    }
+    fetchFormations();
+  }, []);
+
+  const formations = dynamicFormations.length > 0 ? dynamicFormations : [
+    // Fallback static data (existing data)
     {
       id: 1,
       title: 'Marketing Digital Avancé',
@@ -644,26 +695,52 @@ export function Formation() {
                   </button>
                 </div>
 
-                <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); setIsRegisterModalOpen(false); alert('Inscription envoyée avec succès !'); }}>
+                <form className="space-y-6" onSubmit={async (e) => { 
+                  e.preventDefault(); 
+                  const formData = new FormData(e.currentTarget);
+                  const name = formData.get('full_name') as string;
+                  const email = formData.get('email') as string;
+                  const phone = formData.get('phone') as string;
+                  const level = formData.get('study_level') as string;
+
+                  const { error } = await supabase
+                    .from('registrations')
+                    .insert([
+                      { 
+                        full_name: name, 
+                        email: email, 
+                        phone: phone, 
+                        course_id: selectedFormation?.id,
+                        status: 'En attente'
+                      }
+                    ]);
+
+                  if (error) {
+                    alert('Erreur lors de l\'inscription : ' + error.message);
+                  } else {
+                    setIsRegisterModalOpen(false); 
+                    alert('Inscription envoyée avec succès !'); 
+                  }
+                }}>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <Label className="text-[10px] font-bold uppercase tracking-widest text-gray-500">Nom et Prénom</Label>
-                      <Input required className="h-12 bg-white/5 border-white/10 rounded-xl focus:border-indigo-500" placeholder="Ex: Amadou Diallo" />
+                      <Input name="full_name" required className="h-12 bg-white/5 border-white/10 rounded-xl focus:border-indigo-500" placeholder="Ex: Amadou Diallo" />
                     </div>
                     <div className="space-y-2">
                        <Label className="text-[10px] font-bold uppercase tracking-widest text-gray-500">Email</Label>
-                       <Input required type="email" className="h-12 bg-white/5 border-white/10 rounded-xl focus:border-indigo-500" placeholder="votre@email.sn" />
+                       <Input name="email" required type="email" className="h-12 bg-white/5 border-white/10 rounded-xl focus:border-indigo-500" placeholder="votre@email.sn" />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <Label className="text-[10px] font-bold uppercase tracking-widest text-gray-500">Téléphone</Label>
-                      <Input required className="h-12 bg-white/5 border-white/10 rounded-xl focus:border-indigo-500" placeholder="+221 ..." />
+                      <Input name="phone" required className="h-12 bg-white/5 border-white/10 rounded-xl focus:border-indigo-500" placeholder="+221 ..." />
                     </div>
                     <div className="space-y-2">
                        <Label className="text-[10px] font-bold uppercase tracking-widest text-gray-500">Niveau d'étude</Label>
-                       <select translate="no" required className="w-full h-12 bg-[#0c1222] border border-white/10 rounded-xl px-4 text-sm text-gray-300 focus:border-indigo-500 focus:outline-none cursor-pointer">
+                       <select name="study_level" translate="no" required className="w-full h-12 bg-[#0c1222] border border-white/10 rounded-xl px-4 text-sm text-gray-300 focus:border-indigo-500 focus:outline-none cursor-pointer">
                           <option translate="no" value="">Sélectionner</option>
                           <option translate="no" value="bac">BAC</option>
                           <option translate="no" value="licence">LICENCE</option>

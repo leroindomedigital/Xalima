@@ -11,6 +11,7 @@ import {
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useMemo, useEffect } from 'react';
+import { supabase } from '../../lib/supabase';
 
 const UNIVERSITIES = ["Tous", "UCAD", "UGB", "UASZ"];
 
@@ -110,35 +111,45 @@ export function CoursUniversitaires() {
   const [activePdfCourse, setActivePdfCourse] = useState<Course | null>(null);
   const [courseProgress, setCourseProgress] = useState<Record<number, number>>({});
   const [dynamicCourses, setDynamicCourses] = useState<Course[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   
-  // Load progress and admin courses on mount
+  // Load courses from Supabase
   useEffect(() => {
-    const savedProgress = localStorage.getItem('xalima_course_progress');
-    if (savedProgress) {
-      try {
-        setCourseProgress(JSON.parse(savedProgress));
-      } catch(e) {}
-    }
+    async function fetchCourses() {
+      setIsLoading(true);
+      const { data, error } = await supabase
+        .from('courses_university')
+        .select('*')
+        .order('id', { ascending: true });
 
-    const savedAdminCourses = localStorage.getItem('xalima_univ_courses');
-    if (savedAdminCourses) {
-      try {
-        const parsed = JSON.parse(savedAdminCourses);
-        const mapped: Course[] = parsed.map((c: any, i: number) => ({
+      if (error) {
+        console.error('Error fetching courses:', error.message);
+      } else if (data) {
+        const mapped: Course[] = data.map((c: any, i: number) => ({
           id: c.id,
-          univ: 'UCAD', // Default or could capture from admin
-          cat: 'all', 
-          filiere: c.category,
+          univ: c.univ || 'UCAD',
+          cat: c.cat || 'all',
+          filiere: c.faculty,
           title: c.title,
           type: c.type === 'video' ? 'Vidéo' : 'PDF',
           duration: c.duration,
           pages: c.pages,
           image: `/images/cours/cours_${(i % 10) + 1}.jpg`,
           popular: false,
-          level: 'Tous',
+          level: 'L1',
           url: c.url
         }));
         setDynamicCourses(mapped);
+      }
+      setIsLoading(false);
+    }
+
+    fetchCourses();
+
+    const savedProgress = localStorage.getItem('xalima_course_progress');
+    if (savedProgress) {
+      try {
+        setCourseProgress(JSON.parse(savedProgress));
       } catch(e) {}
     }
   }, []);
@@ -153,8 +164,8 @@ export function CoursUniversitaires() {
   };
 
   const filteredCourses = useMemo(() => {
-    const combinedCourses = [...ALL_COURSES, ...dynamicCourses];
-    return combinedCourses.filter(course => {
+    const baseCourses = dynamicCourses.length > 0 ? dynamicCourses : ALL_COURSES;
+    return baseCourses.filter(course => {
       const matchSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           course.filiere.toLowerCase().includes(searchQuery.toLowerCase());
       const matchCat = selectedCat === 'all' || course.cat === selectedCat;
