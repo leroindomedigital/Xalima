@@ -4,11 +4,11 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  console.error('Supabase ENV vars are missing. Check your Vercel Environment Variables settings.');
+  console.warn('⚠️ Supabase URL or Anon Key is missing. Check Vercel Environment Variables.');
 }
 
-// Use placeholder values to avoid createClient() throwing if env vars are missing
+// Initialisation sécurisée qui ne plante pas l'application entière
 export const supabase = createClient(
-  supabaseUrl || 'https://placeholder.supabase.co',
-  supabaseAnonKey || 'placeholder'
+  supabaseUrl || 'https://placeholder-url.supabase.co',
+  supabaseAnonKey || 'placeholder-key'
 );

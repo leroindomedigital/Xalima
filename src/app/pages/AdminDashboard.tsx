@@ -294,7 +294,8 @@ export function AdminDashboard() {
                 </div>
 
                 <div className="bg-[#0c1222] border border-white/10 rounded-[2.5rem] overflow-hidden">
-                   <table className="w-full text-left">
+                   <div className="overflow-x-auto">
+                      <table className="w-full text-left min-w-[800px]">
                       <thead>
                          <tr className="border-b border-white/10">
                             <th className="px-8 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Programme</th>
@@ -333,6 +334,7 @@ export function AdminDashboard() {
                       </tbody>
                    </table>
                 </div>
+             </div>
 
                 {/* Simulated PDF Upload Area */}
                 <div className="p-12 border-2 border-dashed border-white/10 rounded-[3rem] text-center space-y-4 hover:border-indigo-500/20 transition-all">
@@ -365,7 +367,8 @@ export function AdminDashboard() {
                 </div>
 
                 <div className="bg-[#0c1222] border border-white/10 rounded-[2.5rem] overflow-hidden">
-                   <table className="w-full text-left">
+                   <div className="overflow-x-auto">
+                      <table className="w-full text-left min-w-[800px]">
                       <thead>
                          <tr className="border-b border-white/10">
                             <th className="px-8 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Titre du Cours</th>
@@ -404,7 +407,8 @@ export function AdminDashboard() {
                       </tbody>
                    </table>
                 </div>
-              </motion.div>
+             </div>
+          </motion.div>
             )}
 
             {activeTab === 'students' && (
@@ -424,7 +428,8 @@ export function AdminDashboard() {
                 </div>
 
                 <div className="bg-[#0c1222] border border-white/10 rounded-[2.5rem] overflow-hidden">
-                   <table className="w-full text-left">
+                   <div className="overflow-x-auto">
+                      <table className="w-full text-left min-w-[800px]">
                       <thead>
                          <tr className="border-b border-white/10">
                             <th className="px-8 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Apprenant</th>
@@ -473,6 +478,7 @@ export function AdminDashboard() {
                          ))}
                       </tbody>
                    </table>
+                   </div>
                 </div>
               </motion.div>
             )}
