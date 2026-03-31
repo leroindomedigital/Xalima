@@ -1,8 +1,12 @@
 import { createRoot } from "react-dom/client";
-import App from "./app/App.tsx";
+import App from "./app/App";
 import "./styles/index.css";
-import { AuthProvider } from "./context/AuthContext.tsx";
-import { ErrorBoundary } from "./components/ErrorBoundary.tsx";
+import { AuthProvider } from "./context/AuthContext";
+import { ErrorBoundary } from "./components/ErrorBoundary";
+
+console.log("XALIMA: Initialisation du site...");
+const rootElement = document.getElementById("root");
+if (rootElement) rootElement.innerHTML = "<div style='color:white; padding:20px;'>Chargement de la plateforme...</div>";
 
 // --- GESTION DES ERREURS D'URGENCE ---
 window.onerror = function(message, source, lineno, colno, error) {
@@ -20,6 +24,12 @@ window.onerror = function(message, source, lineno, colno, error) {
   }
 };
 // ------------------------------------
+
+// --- TEST CRITIQUE DES VARIABLES ---
+if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
+  console.error("ERREUR : Les variables d'environnement Supabase sont absentes !");
+  // On laisse quand même essayer de charger, mais on prévient
+}
 
 const container = document.getElementById("root");
 
