@@ -89,15 +89,15 @@ export function Header() {
           </motion.button>
         </div>
 
-        {/* Mobile Menu Overlay - Dark & Small minimalist version */}
+        {/* Mobile Menu Overlay - Solid & High Contrast version */}
         <AnimatePresence>
           {mobileMenuOpen && (
             <motion.div 
-              initial={{ opacity: 0, x: 20 }}
+              initial={{ opacity: 0, x: '100%' }}
               animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              transition={{ duration: 0.2 }}
-              className="fixed inset-0 z-[200] bg-[#020617] lg:hidden flex flex-col p-6 pt-20"
+              exit={{ opacity: 0, x: '100%' }}
+              transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+              className="fixed inset-0 z-[9999] bg-[#020617] lg:hidden flex flex-col p-8 pt-24"
             >
               <div className="flex items-center justify-between mb-12 relative z-10">
                 <img src="/logo-xalima.png" alt="Xalima" className="h-6 w-auto" />
@@ -121,10 +121,10 @@ export function Header() {
                     >
                       <Link
                         to={link.path}
-                        className={`inline-flex items-center px-5 py-3 rounded-2xl transition-all duration-300 font-black text-[11px] uppercase tracking-[0.25em] ${
+                        className={`inline-flex items-center px-6 py-4 rounded-2xl transition-all duration-300 font-black text-lg uppercase tracking-widest ${
                           isActive
                             ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20 scale-105'
-                            : 'text-gray-500 hover:text-white'
+                            : 'text-gray-400 hover:text-white'
                         }`}
                         onClick={() => setMobileMenuOpen(false)}
                       >
