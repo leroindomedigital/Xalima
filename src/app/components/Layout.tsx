@@ -1,9 +1,10 @@
-import { Outlet } from 'react-router';
+import { Outlet, ScrollRestoration } from 'react-router';
 import { Header } from './Header';
 
 export function Layout() {
   return (
     <div className="min-h-screen bg-black">
+      <ScrollRestoration />
       <Header />
       <main>
         <Outlet />
