@@ -51,7 +51,6 @@ export function Register() {
     } catch (err: any) {
       console.error('Erreur inscription:', err);
       setIsError(true);
-      alert('Erreur Supabase : ' + (err.message || 'Inconnue') + '\n\nVérifiez que la table "registrations" existe avec les bonnes colonnes.');
     }
   };
 
@@ -241,7 +240,7 @@ export function Register() {
                       {isError && (
                         <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-500 text-xs font-bold flex items-center gap-3">
                           <AlertCircle className="w-5 h-5 shrink-0" />
-                          <span>Une erreur est survenue lors de l'inscription. Veuillez vérifier votre connexion ou si la table existe dans Supabase.</span>
+                          <span>Une erreur de connexion est survenue. Vérifiez vos paramètres Vercel.</span>
                         </div>
                       )}
 
