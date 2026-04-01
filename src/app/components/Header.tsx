@@ -89,75 +89,76 @@ export function Header() {
           </motion.button>
         </div>
 
-        {/* Mobile Menu Overlay - Solid & High Contrast version */}
+        {/* Mobile Menu Overlay - Solid, Minimalist & Pro */}
         <AnimatePresence>
           {mobileMenuOpen && (
             <motion.div 
-              initial={{ opacity: 0, x: '100%' }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: '100%' }}
-              transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-              className="fixed inset-0 z-[9999] bg-[#020617] lg:hidden flex flex-col p-8 pt-24"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 z-[9999] bg-black flex flex-col"
             >
-              <div className="flex items-center justify-between mb-12 relative z-10">
+              <div className="flex items-center justify-between p-6 border-b border-white/5">
                 <img src="/logo-xalima.png" alt="Xalima" className="h-6 w-auto" />
                 <button 
                   onClick={() => setMobileMenuOpen(false)}
-                  className="p-2.5 rounded-xl bg-white/5 border border-white/10 text-white active:scale-90 transition-transform"
+                  className="p-2 text-white/50 hover:text-white transition-colors"
                 >
-                  <X size={18} />
+                  <X size={24} />
                 </button>
               </div>
 
-              <div className="flex flex-col space-y-4 relative z-10">
-                {navLinks.map((link, i) => {
-                  const isActive = location.pathname === link.path;
-                  return (
-                    <motion.div
-                      key={link.path}
-                      initial={{ opacity: 0, x: 10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: i * 0.05 }}
-                    >
-                      <Link
-                        to={link.path}
-                        className={`inline-flex items-center px-4 py-2.5 rounded-xl transition-all duration-300 font-black text-xs uppercase tracking-[0.2em] border ${
-                          isActive
-                            ? 'bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-600/20 scale-105'
-                            : 'bg-white/5 border-indigo-500/30 text-gray-400 hover:text-white hover:border-indigo-500'
-                        }`}
-                        onClick={() => setMobileMenuOpen(false)}
+              <div className="flex-1 overflow-y-auto py-8 px-6 space-y-6">
+                <div className="space-y-4">
+                  {navLinks.map((link, i) => {
+                    const isActive = location.pathname === link.path;
+                    return (
+                      <motion.div
+                        key={link.path}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: i * 0.05 }}
                       >
-                        {link.name}
-                        {isActive && <span className="ml-3 w-1 h-1 rounded-full bg-white animate-pulse" />}
-                      </Link>
-                    </motion.div>
-                  );
-                })}
-              </div>
+                        <Link
+                          to={link.path}
+                          className={`block py-3 text-xs font-black uppercase tracking-[0.2em] transition-colors ${
+                            isActive ? 'text-indigo-400' : 'text-white/40'
+                          }`}
+                          onClick={() => setMobileMenuOpen(false)}
+                        >
+                          <div className="flex items-center">
+                            {isActive && <div className="w-1 h-1 bg-indigo-500 rounded-full mr-3" />}
+                            {link.name}
+                          </div>
+                        </Link>
+                      </motion.div>
+                    );
+                  })}
+                </div>
 
-              <div className="mt-auto space-y-8 relative z-10 pb-6">
-                <div className="h-px bg-white/5 w-full" />
-                <div className="flex flex-col gap-3">
+                <div className="pt-8 space-y-4">
+                  <div className="h-px bg-white/5 w-12" />
                   <Button
-                    className="h-11 w-full bg-indigo-600 text-white font-black uppercase tracking-widest rounded-xl text-[9px] shadow-lg shadow-indigo-600/20 active:scale-95 transition-transform"
+                    size="lg"
+                    className="w-full h-12 bg-indigo-600 text-white font-black uppercase tracking-widest rounded-xl text-[10px]"
                     onClick={handleSignup}
                   >
-                    S'INSCRIRE MAINTENANT
+                    S'inscrire
                   </Button>
                   <button
-                    className="h-11 w-full bg-white/5 text-gray-400 font-black uppercase tracking-widest rounded-xl text-[9px] border border-white/10 active:scale-95 transition-transform"
+                    className="w-full h-12 bg-white/5 text-white/60 font-black uppercase tracking-widest rounded-xl text-[10px] border border-white/10"
                     onClick={handleLogin}
                   >
-                    ACCÈS MEMBRE
+                    Espace membre
                   </button>
                 </div>
-                
-                <div className="flex items-center justify-center space-x-8 text-gray-600">
-                  {['LinkedIn', 'TikTok', 'Instagram'].map((social) => (
-                    <span key={social} className="text-[8px] uppercase font-black tracking-[0.3em]">{social}</span>
-                  ))}
-                </div>
+              </div>
+
+              <div className="p-8 flex justify-center space-x-6">
+                {['LinkedIn', 'TikTok', 'Instagram'].map((social) => (
+                  <span key={social} className="text-[8px] font-black uppercase tracking-widest text-white/20">{social}</span>
+                ))}
               </div>
             </motion.div>
           )}
