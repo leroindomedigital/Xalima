@@ -180,13 +180,6 @@ export function CoursUniversitaires() {
     return ["Tous", ...FILIERES_BY_CAT[selectedCat]];
   }, [selectedCat]);
 
-  // Derive "Resume" courses from progress
-  const startedCourses = useMemo(() => {
-    return Object.entries(courseProgress)
-      .filter(([_, prog]) => prog > 0 && prog < 100)
-      .map(([id]) => ALL_COURSES.find(c => c.id === parseInt(id)))
-      .filter(Boolean) as Course[];
-  }, [courseProgress]);
 
   return (
     <div className="min-h-screen bg-[#020617] text-white pt-24 pb-20 overflow-x-hidden">
@@ -241,26 +234,6 @@ export function CoursUniversitaires() {
            ))}
         </div>
 
-        {/* Resume Previous Courses Section */}
-        {startedCourses.length > 0 && searchQuery === '' && selectedCat === 'all' && (
-          <div className="mb-20">
-            <h2 className="text-2xl font-black uppercase tracking-widest mb-8 flex items-center gap-3">
-              <Clock className="w-6 h-6 text-indigo-500" />
-              Reprendre où vous en étiez
-            </h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-               {startedCourses.slice(0, 3).map(course => (
-                 <CourseCard 
-                   key={course.id} 
-                   course={course} 
-                   progress={courseProgress[course.id]}
-                   onPlayVideo={() => setActiveVideoCourse(course)}
-                   onReadPdf={() => setActivePdfCourse(course)}
-                 />
-               ))}
-            </div>
-          </div>
-        )}
 
         {/* Navigation Categories */}
         <div className="mb-12">
