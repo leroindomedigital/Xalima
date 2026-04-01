@@ -11,8 +11,10 @@ export function Header() {
 
   const navLinks = [
     { name: 'Accueil', path: '/' },
-    { name: 'Formation', path: '/formation' },
-    { name: 'Cours universitaires', path: '/cours' },
+    { name: 'Formations', path: '/formation' },
+    { name: 'Cours Universitaires', path: '/cours' },
+    { name: 'Suggérer un cours', path: '/suggerer-cours' },
+    { name: 'Mon Espace', path: '/dashboard' },
     { name: 'Contact', path: '/contact' },
   ];
 
@@ -89,7 +91,7 @@ export function Header() {
           </motion.button>
         </div>
 
-        {/* Mobile Menu Overlay - Solid, Minimalist & Pro */}
+        {/* Mobile Menu Overlay - Solid, Minimalist & High Visibility */}
         <AnimatePresence>
           {mobileMenuOpen && (
             <motion.div 
@@ -97,20 +99,20 @@ export function Header() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 z-[9999] bg-black flex flex-col"
+              className="fixed inset-0 z-[9999] bg-[#020617] flex flex-col"
             >
-              <div className="flex items-center justify-between p-6 border-b border-white/5">
+              <div className="flex items-center justify-between p-6 border-b border-white/5 bg-black/20 backdrop-blur-xl">
                 <img src="/logo-xalima.png" alt="Xalima" className="h-6 w-auto" />
                 <button 
                   onClick={() => setMobileMenuOpen(false)}
-                  className="p-2 text-white/50 hover:text-white transition-colors"
+                  className="p-2 text-white hover:bg-white/10 rounded-xl transition-colors"
                 >
                   <X size={24} />
                 </button>
               </div>
 
-              <div className="flex-1 overflow-y-auto py-8 px-6 space-y-6">
-                <div className="space-y-4">
+              <div className="flex-1 overflow-y-auto py-10 px-8">
+                <div className="space-y-6">
                   {navLinks.map((link, i) => {
                     const isActive = location.pathname === link.path;
                     return (
@@ -122,42 +124,39 @@ export function Header() {
                       >
                         <Link
                           to={link.path}
-                          className={`block py-3 text-xs font-black uppercase tracking-[0.2em] transition-colors ${
-                            isActive ? 'text-indigo-400' : 'text-white/40'
+                          className={`flex items-center py-4 text-sm font-black uppercase tracking-[0.25em] transition-all ${
+                            isActive ? 'text-indigo-400 translate-x-2' : 'text-white/80 hover:text-white'
                           }`}
                           onClick={() => setMobileMenuOpen(false)}
                         >
-                          <div className="flex items-center">
-                            {isActive && <div className="w-1 h-1 bg-indigo-500 rounded-full mr-3" />}
-                            {link.name}
-                          </div>
+                          {isActive && <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full mr-4 shadow-[0_0_10px_rgba(99,102,241,0.5)]" />}
+                          {link.name}
                         </Link>
                       </motion.div>
                     );
                   })}
                 </div>
 
-                <div className="pt-8 space-y-4">
-                  <div className="h-px bg-white/5 w-12" />
+                <div className="mt-12 pt-12 border-t border-white/5 space-y-5">
                   <Button
                     size="lg"
-                    className="w-full h-12 bg-indigo-600 text-white font-black uppercase tracking-widest rounded-xl text-[10px]"
+                    className="w-full h-14 bg-indigo-600 text-white font-black uppercase tracking-widest rounded-2xl text-[10px] shadow-xl shadow-indigo-600/20"
                     onClick={handleSignup}
                   >
-                    S'inscrire
+                    🚀 S'inscrire maintenant
                   </Button>
                   <button
-                    className="w-full h-12 bg-white/5 text-white/60 font-black uppercase tracking-widest rounded-xl text-[10px] border border-white/10"
+                    className="w-full h-14 bg-white/5 text-white/90 font-black uppercase tracking-widest rounded-2xl text-[10px] border border-white/10"
                     onClick={handleLogin}
                   >
-                    Espace membre
+                    🔐 Espace membre
                   </button>
                 </div>
               </div>
 
-              <div className="p-8 flex justify-center space-x-6">
+              <div className="p-8 pb-10 flex justify-center space-x-10">
                 {['LinkedIn', 'TikTok', 'Instagram'].map((social) => (
-                  <span key={social} className="text-[8px] font-black uppercase tracking-widest text-white/20">{social}</span>
+                  <span key={social} className="text-[9px] font-black uppercase tracking-widest text-white/30">{social}</span>
                 ))}
               </div>
             </motion.div>
