@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   User, Mail, Phone, GraduationCap, MapPin, 
   Send, ArrowRight, CheckCircle2, ChevronRight,
-  Sparkles, ShieldCheck, Globe
+  Sparkles, ShieldCheck, Globe, AlertCircle
 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -48,9 +48,10 @@ export function Register() {
       setTimeout(() => {
         navigate('/');
       }, 3000);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Erreur inscription:', err);
       setIsError(true);
+      alert('Erreur Supabase : ' + (err.message || 'Inconnue') + '\n\nVérifiez que la table "registrations" existe avec les bonnes colonnes.');
     }
   };
 
@@ -236,6 +237,13 @@ export function Register() {
                           </select>
                         </div>
                       </div>
+
+                      {isError && (
+                        <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-500 text-xs font-bold flex items-center gap-3">
+                          <AlertCircle className="w-5 h-5 shrink-0" />
+                          <span>Une erreur est survenue lors de l'inscription. Veuillez vérifier votre connexion ou si la table existe dans Supabase.</span>
+                        </div>
+                      )}
 
                       <div className="pt-6">
                         <Button
