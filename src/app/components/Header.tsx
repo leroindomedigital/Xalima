@@ -28,14 +28,14 @@ export function Header() {
   return (
     <header className="fixed top-0 left-0 right-0 z-[100] transition-all duration-300 border-b border-white/5 bg-[#020617]/40 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-        <div className="flex items-center justify-between h-20">
+        <div className="flex items-center justify-between h-16 sm:h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2 group">
             <motion.img 
               whileHover={{ scale: 1.05 }}
               src="/logo-xalima.png" 
               alt="Xalima" 
-              className="h-10 w-auto filter drop-shadow-[0_0_10px_rgba(99,102,241,0.2)]" 
+              className="h-8 sm:h-10 w-auto filter drop-shadow-[0_0_10px_rgba(99,102,241,0.2)]" 
             />
           </Link>
 

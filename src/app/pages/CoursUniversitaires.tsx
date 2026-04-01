@@ -206,19 +206,19 @@ export function CoursUniversitaires() {
               <span>Plus de 1000 supports pédagogiques certifiés</span>
             </div>
             
-            <h1 className="text-5xl sm:text-7xl font-black mb-8 leading-[1.05] tracking-tight">
-              L'Université <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-blue-400 to-indigo-600">Sénégalaise Multi-Filières</span>.
+            <h1 className="text-3xl sm:text-7xl font-black mb-6 sm:mb-8 leading-[1.05] tracking-tight">
+              L'Université <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-blue-400 to-indigo-600">Sénégalaise</span>.
             </h1>
-            <p className="text-lg sm:text-xl text-gray-400 leading-relaxed mb-12 font-medium">
+            <p className="text-sm sm:text-xl text-gray-400 leading-relaxed mb-8 sm:mb-12 font-medium">
                Explorez un catalogue riche couvrant toutes les <span className="text-white">universités publiques</span> du Sénégal.
             </p>
             
             <div className="relative w-full max-w-3xl group mx-auto">
               <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500/20 to-blue-500/20 rounded-3xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200" />
-              <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-gray-500 group-focus-within:text-indigo-400 transition-colors" />
+              <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 sm:w-6 sm:h-6 text-gray-500 group-focus-within:text-indigo-400 transition-colors" />
               <Input 
-                 className="relative w-full h-16 bg-[#0c1222]/80 backdrop-blur-xl border-white/10 rounded-2xl pl-16 pr-6 text-lg font-bold focus:border-indigo-500/50 transition-all outline-none"
-                 placeholder="Rechercher une filière (Droit, Médecine, Informatique...)"
+                 className="relative w-full h-14 sm:h-16 bg-[#0c1222]/80 backdrop-blur-xl border-white/10 rounded-2xl pl-14 sm:pl-16 pr-6 text-base sm:text-lg font-bold focus:border-indigo-500/50 transition-all outline-none"
+                 placeholder="Rechercher une filière..."
                  value={searchQuery}
                  onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -264,18 +264,18 @@ export function CoursUniversitaires() {
 
         {/* Navigation Categories */}
         <div className="mb-12">
-           <div className="flex flex-wrap items-center justify-center gap-4">
+           <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4">
               {CATEGORIES.map((cat) => (
                 <button
                   key={cat.id}
                   onClick={() => { setSelectedCat(cat.id); setSelectedFiliere('Tous'); }}
-                  className={`flex items-center gap-3 px-8 py-4 rounded-2xl transition-all duration-300 font-black text-xs uppercase tracking-widest border ${
+                  className={`flex items-center gap-2 sm:gap-3 px-4 py-3 sm:px-8 sm:py-4 rounded-2xl transition-all duration-300 font-black text-[10px] sm:text-xs uppercase tracking-widest border ${
                     selectedCat === cat.id 
                       ? 'bg-indigo-600 border-indigo-500 text-white shadow-xl shadow-indigo-600/20 scale-105' 
                       : 'bg-[#0c1222] border-white/10 text-gray-400 hover:border-white/20 hover:text-white'
                   }`}
                 >
-                  <cat.icon className={`w-4 h-4 ${selectedCat === cat.id ? 'text-white' : cat.color}`} />
+                  <cat.icon className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${selectedCat === cat.id ? 'text-white' : cat.color}`} />
                   {cat.name}
                 </button>
               ))}
@@ -387,8 +387,8 @@ function CourseCard({ course, progress, onPlayVideo, onReadPdf }: { course: Cour
   const hasPdf = course.type.includes('PDF');
 
   return (
-    <Card className="bg-[#0c1222]/50 backdrop-blur-sm border border-white/10 hover:border-indigo-500/30 transition-all duration-500 flex flex-col group overflow-hidden rounded-[2.5rem] h-full shadow-2xl shadow-black/50">
-      <div className="relative h-56 w-full overflow-hidden">
+    <Card className="bg-[#0c1222]/50 backdrop-blur-sm border border-white/10 hover:border-indigo-500/30 transition-all duration-500 flex flex-col group overflow-hidden rounded-[1.5rem] sm:rounded-[2.5rem] h-full shadow-2xl shadow-black/50">
+      <div className="relative h-40 sm:h-56 w-full overflow-hidden">
         <ImageWithFallback src={course.image} alt={course.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-[#020617]/20 to-transparent" />
         
@@ -426,15 +426,15 @@ function CourseCard({ course, progress, onPlayVideo, onReadPdf }: { course: Cour
         </button>
       </div>
 
-      <CardHeader className="p-8 pb-4">
-        <div className="flex items-center gap-3 mb-4">
-           {hasVideo && <Video className="w-4 h-4 text-emerald-400" />}
-           {hasPdf && <FileText className="w-4 h-4 text-blue-400" />}
-           <span className="text-[10px] font-black text-white uppercase tracking-widest">{course.filiere}</span>
+      <CardHeader className="p-5 sm:p-8 pb-3 sm:pb-4">
+        <div className="flex items-center gap-3 mb-3 sm:mb-4">
+           {hasVideo && <Video className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-400" />}
+           {hasPdf && <FileText className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-400" />}
+           <span className="text-[9px] sm:text-[10px] font-black text-white uppercase tracking-widest">{course.filiere}</span>
            <div className="h-1 w-1 rounded-full bg-white/20" />
-           <span className="text-[10px] font-medium text-gray-500 uppercase tracking-widest">{course.level}</span>
+           <span className="text-[9px] sm:text-[10px] font-medium text-gray-500 uppercase tracking-widest">{course.level}</span>
         </div>
-        <CardTitle className="text-white text-lg font-black leading-tight uppercase group-hover:text-indigo-400 transition-colors">
+        <CardTitle className="text-white text-base sm:text-lg font-black leading-tight uppercase group-hover:text-indigo-400 transition-colors">
           {course.title}
         </CardTitle>
       </CardHeader>
@@ -446,20 +446,20 @@ function CourseCard({ course, progress, onPlayVideo, onReadPdf }: { course: Cour
          </div>
       </CardContent>
 
-      <CardFooter className="p-8 pt-0 mt-auto flex flex-col gap-3">
+      <CardFooter className="p-5 sm:p-8 pt-0 mt-auto flex flex-col gap-3">
         {hasVideo ? (
-          <Button onClick={onPlayVideo} className="w-full h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all shadow-xl shadow-indigo-600/20 active:scale-95 group/btn">
-            Regarder la vidéo <Play className="ml-2 w-3.5 h-3.5 fill-white" />
+          <Button onClick={onPlayVideo} className="w-full h-11 sm:h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl sm:rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all shadow-xl shadow-indigo-600/20 active:scale-95 group/btn">
+            Regarder la vidéo <Play className="ml-2 w-3 h-3 sm:w-3.5 sm:h-3.5 fill-white" />
           </Button>
         ) : (
-          <Button onClick={onReadPdf} className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all shadow-xl shadow-blue-600/20 active:scale-95 group/btn">
-            Consulter le PDF <FileText className="ml-2 w-3.5 h-3.5" />
+          <Button onClick={onReadPdf} className="w-full h-11 sm:h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-xl sm:rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all shadow-xl shadow-blue-600/20 active:scale-95 group/btn">
+            Consulter le PDF <FileText className="ml-2 w-3 h-3 sm:w-3.5 sm:h-3.5" />
           </Button>
         )}
         
         {hasVideo && hasPdf && (
-           <Button variant="outline" onClick={onReadPdf} className="w-full h-11 bg-white/5 border-white/10 rounded-xl font-black text-[9px] uppercase hover:bg-white/10">
-              <Download className="w-3.5 h-3.5 mr-2" /> Télécharger PDF
+           <Button variant="outline" onClick={onReadPdf} className="w-full h-10 sm:h-11 bg-white/5 border-white/10 rounded-xl font-black text-[9px] uppercase hover:bg-white/10">
+              <Download className="w-3.5 h-3.5 mr-2" /> PDF
            </Button>
         )}
       </CardFooter>

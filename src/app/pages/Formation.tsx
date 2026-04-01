@@ -55,8 +55,9 @@ export function Formation() {
       } else if (data) {
         const mapped = data.map(f => ({
           ...f,
-          icon: iconMap[f.icon_name] || GraduationCap, // Fallback icon
-          certification: true, // Defaulting for now
+          icon: iconMap[f.icon_name] || GraduationCap, 
+          certification: true, 
+          image: f.image && f.image.trim() !== "" ? f.image : `/images/formations/formation_${(f.id % 5) + 1}.jpg`, // Image par défaut basée sur l'ID
           type: f.level === 'Master' ? 'Master' : (f.level === 'Spécialisation' ? 'Spécialisation' : 'Formation')
         }));
         setDynamicFormations(mapped);
@@ -424,16 +425,16 @@ export function Formation() {
               <GraduationCap className="w-4 h-4" />
               <span>Excellence Sénégalaise</span>
             </div>
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black mb-8 leading-[1.1] tracking-tight">
+            <h1 className="text-3xl sm:text-6xl lg:text-7xl font-black mb-6 sm:mb-8 leading-[1.1] tracking-tight">
               Bâtissez votre <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-indigo-600">futur digital</span>.
             </h1>
-            <p className="text-base sm:text-lg text-gray-500 leading-relaxed mb-10 font-normal">
+            <p className="text-sm sm:text-lg text-gray-500 leading-relaxed mb-8 sm:mb-10 font-normal">
               Des programmes certifiants conçus par des experts pour répondre aux exigences du marché du travail au Sénégal.
             </p>
             <Button 
               size="lg"
-              className="h-16 px-10 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-bold text-lg uppercase tracking-wider shadow-xl shadow-indigo-600/20 transition-all active:scale-95"
+              className="h-14 sm:h-16 px-10 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-bold text-base sm:text-lg uppercase tracking-wider shadow-xl shadow-indigo-600/20 transition-all active:scale-95"
               onClick={() => setIsLoginModalOpen(true)}
             >
               DÉMARRER MON PARCOURS
@@ -465,7 +466,7 @@ export function Formation() {
         </div>
 
         {/* Categorized Formations */}
-        <div className="space-y-32">
+        <div className="space-y-16 sm:space-y-32">
           {categories.map((category, catIdx) => {
             const currentPage = pages[category.title] || 1;
             const totalPages = Math.ceil(category.items.length / ITEMS_PER_PAGE);
@@ -473,8 +474,8 @@ export function Formation() {
 
             return (
             <div key={category.title}>
-              <div className="flex items-center justify-between mb-12">
-                <h2 className="text-2xl sm:text-3xl font-black tracking-tight uppercase">{category.title}</h2>
+              <div className="flex items-center justify-between mb-8 sm:mb-12">
+                <h2 className="text-xl sm:text-3xl font-black tracking-tight uppercase">{category.title}</h2>
                 <div className="h-px flex-grow mx-8 bg-gradient-to-r from-indigo-500/20 to-transparent hidden sm:block"></div>
                 <Badge variant="outline" className="border-white/5 text-gray-500 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">
                   {category.items.length} Formations
@@ -493,7 +494,7 @@ export function Formation() {
                       transition={{ delay: i * 0.05 }}
                     >
                       <Card className="bg-white/5 border border-white/10 hover:border-indigo-500/30 transition-all duration-300 flex flex-col group overflow-hidden rounded-2xl h-full">
-                        <div className="relative h-48 w-full overflow-hidden">
+                        <div className="relative h-40 sm:h-48 w-full overflow-hidden">
                           <ImageWithFallback
                             src={formation.image}
                             alt={formation.title}
@@ -514,11 +515,11 @@ export function Formation() {
                           </div>
                         </div>
 
-                        <CardHeader className="p-6">
-                          <CardTitle className="text-white text-lg font-black mb-2 tracking-wide uppercase transition-colors group-hover:text-indigo-400">
+                        <CardHeader className="p-5 sm:p-6">
+                          <CardTitle className="text-white text-base sm:text-lg font-black mb-2 tracking-wide uppercase transition-colors group-hover:text-indigo-400">
                             {formation.title}
                           </CardTitle>
-                          <CardDescription className="text-gray-400 text-sm leading-relaxed line-clamp-2 font-normal">
+                          <CardDescription className="text-gray-400 text-[12px] sm:text-sm leading-relaxed line-clamp-2 font-normal">
                             {formation.description}
                           </CardDescription>
                         </CardHeader>

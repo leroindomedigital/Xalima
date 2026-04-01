@@ -116,14 +116,14 @@ export function Home() {
               <div className="space-y-6">
                 <motion.h1 
                   variants={itemVariants}
-                  className="text-4xl sm:text-7xl lg:text-8xl font-black leading-[1.1] sm:leading-[1.05] tracking-tight"
+                  className="text-3xl sm:text-7xl lg:text-8xl font-black leading-[1.1] sm:leading-[1.05] tracking-tight"
                 >
                   Bâtir le <br /> 
                   <span className="text-white">Sénégal de Demain</span>.
                 </motion.h1>
                 <motion.p 
                   variants={itemVariants}
-                  className="text-lg sm:text-xl text-gray-400 max-w-xl leading-relaxed font-normal italic border-l-2 border-indigo-500/30 pl-4 sm:pl-6"
+                  className="text-base sm:text-xl text-gray-400 max-w-xl leading-relaxed font-normal italic border-l-2 border-indigo-500/30 pl-4 sm:pl-6"
                 >
                   L'alliance de l'excellence académique et de la maîtrise technologique pour propulser votre carrière au sommet.
                 </motion.p>
@@ -194,7 +194,7 @@ export function Home() {
       </section>
 
       {/* Minimalist Institutional Stats Bar */}
-      <section className="py-32 bg-[#020617] relative z-20 border-t border-white/5">
+      <section className="py-12 sm:py-32 bg-[#020617] relative z-20 border-t border-white/5">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
@@ -242,10 +242,10 @@ export function Home() {
       </section>
 
       {/* Nos Services - Refined 2-Column Grid */}
-      <section className="py-48 px-4 sm:px-6 lg:px-8 border-t border-white/5 relative bg-[#020617]">
+      <section className="py-20 sm:py-48 px-4 sm:px-6 lg:px-8 border-t border-white/5 relative bg-[#020617]">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-24 max-w-3xl mx-auto space-y-6">
-            <h2 className="text-6xl font-black leading-tight tracking-tight uppercase">
+          <div className="text-center mb-16 sm:mb-24 max-w-3xl mx-auto space-y-6">
+            <h2 className="text-3xl sm:text-6xl font-black leading-tight tracking-tight uppercase">
               Nos <span className="text-indigo-500">Services</span>
             </h2>
           </div>
@@ -256,16 +256,16 @@ export function Home() {
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="relative p-12 rounded-[3rem] bg-[#0c1222] border border-white/10 flex flex-col space-y-10 group hover:border-indigo-500/30 transition-all duration-500"
+              className="relative p-8 sm:p-12 rounded-[2rem] sm:rounded-[3rem] bg-[#0c1222] border border-white/10 flex flex-col space-y-10 group hover:border-indigo-500/30 transition-all duration-500"
             >
               <div className="space-y-6">
                 <div className="flex items-center space-x-5">
-                  <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10 group-hover:bg-indigo-600/10 transition-colors">
-                    <BookOpen className="w-7 h-7 text-white" />
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10 group-hover:bg-indigo-600/10 transition-colors">
+                    <BookOpen className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
                   </div>
-                  <h3 className="text-4xl font-black uppercase tracking-tight leading-none">Formations <br /> Numériques</h3>
+                  <h3 className="text-2xl sm:text-4xl font-black uppercase tracking-tight leading-none">Formations <br /> Numériques</h3>
                 </div>
-                <p className="text-gray-400 text-lg leading-relaxed">
+                <p className="text-gray-400 text-base sm:text-lg leading-relaxed">
                   Accédez à des formations professionnelles de qualité avec certifications à la clé
                 </p>
               </div>
