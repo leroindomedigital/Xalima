@@ -401,7 +401,7 @@ export function Formation() {
 
   const categories = [
     { title: 'Formations Professionnelles', items: formations.filter(f => f.type === 'Formation') },
-    { title: 'Spécialisations Avancées', items: formations.filter(f => f.type === 'Spécialisations') },
+    { title: 'Spécialisations Avancées', items: formations.filter(f => f.type === 'Spécialisation') },
     { title: 'Programmes Master', items: formations.filter(f => f.type === 'Master') },
   ];
 
