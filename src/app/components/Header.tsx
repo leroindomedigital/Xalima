@@ -89,75 +89,69 @@ export function Header() {
           </motion.button>
         </div>
 
-        {/* Mobile Menu Overlay */}
+        {/* Mobile Menu Overlay - Clear white version */}
         <AnimatePresence>
           {mobileMenuOpen && (
             <motion.div 
-              initial={{ opacity: 0, scale: 1.1 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 1.1 }}
-              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              className="fixed inset-0 z-[200] bg-[#020617] lg:hidden flex flex-col p-8 pt-24"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 z-[200] bg-white lg:hidden flex flex-col p-6 pt-20"
             >
-              {/* Decorative Background Element */}
-              <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-indigo-600/10 blur-[120px] rounded-full pointer-events-none" />
-
-              <div className="flex items-center justify-between mb-16 relative z-10">
-                <img src="/logo-xalima.png" alt="Xalima" className="h-8 w-auto" />
+              <div className="flex items-center justify-between mb-12 relative z-10">
+                <img src="/logo-xalima.png" alt="Xalima" className="h-7 w-auto" />
                 <button 
                   onClick={() => setMobileMenuOpen(false)}
-                  className="p-3 rounded-2xl bg-white/5 border border-white/10 text-white active:scale-90 transition-transform"
+                  className="p-2 rounded-xl bg-gray-100 text-gray-900 active:scale-90 transition-transform"
                 >
-                  <X size={24} />
+                  <X size={20} />
                 </button>
               </div>
 
-              <div className="flex flex-col space-y-8 relative z-10">
+              <div className="flex flex-col space-y-6 relative z-10 pl-2">
                 {navLinks.map((link, i) => (
                   <motion.div
                     key={link.path}
-                    initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.05 }}
                   >
                     <Link
                       to={link.path}
-                      className={`text-3xl font-black uppercase tracking-tight transition-all active:translate-x-2 ${
+                      className={`text-lg font-bold uppercase tracking-widest transition-all ${
                         location.pathname === link.path
-                          ? 'text-white'
-                          : 'text-gray-500'
+                          ? 'text-indigo-600'
+                          : 'text-gray-900 hover:text-indigo-500'
                       }`}
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       {link.name}
-                      {location.pathname === link.path && (
-                        <span className="inline-block ml-3 w-1.5 h-1.5 rounded-full bg-indigo-500" />
-                      )}
                     </Link>
                   </motion.div>
                 ))}
               </div>
 
-              <div className="mt-auto space-y-8 relative z-10 pb-4">
-                <div className="h-px bg-white/5 w-full" />
+              <div className="mt-auto space-y-8 relative z-10 pb-6">
+                <div className="h-px bg-gray-100 w-full" />
                 <div className="flex flex-col gap-3">
                   <Button
-                    className="h-14 w-full bg-indigo-600 text-white font-black uppercase tracking-widest rounded-2xl text-[10px] shadow-lg shadow-indigo-600/20 active:scale-95 transition-transform"
+                    className="h-12 w-full bg-indigo-600 text-white font-bold uppercase tracking-widest rounded-xl text-[10px] shadow-lg shadow-indigo-600/10 active:scale-95 transition-transform"
                     onClick={handleSignup}
                   >
                     S'INSCRIRE MAINTENANT
                   </Button>
                   <button
-                    className="h-14 w-full bg-white/5 text-white font-black uppercase tracking-widest rounded-2xl text-[10px] border border-white/10 active:scale-95 transition-transform"
+                    className="h-12 w-full bg-white text-gray-900 font-bold uppercase tracking-widest rounded-xl text-[10px] border border-gray-200 active:scale-95 transition-transform"
                     onClick={handleLogin}
                   >
                     ACCÈS MEMBRE
                   </button>
                 </div>
                 
-                <div className="flex items-center justify-center space-x-8 text-gray-500">
+                <div className="flex items-center justify-center space-x-8 text-gray-400">
                   {['LinkedIn', 'TikTok', 'Instagram'].map((social) => (
-                    <span key={social} className="text-[9px] uppercase font-black tracking-[0.2em]">{social}</span>
+                    <span key={social} className="text-[9px] uppercase font-bold tracking-[0.2em]">{social}</span>
                   ))}
                 </div>
               </div>
