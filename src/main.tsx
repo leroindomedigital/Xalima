@@ -26,9 +26,12 @@ window.onerror = function(message, source, lineno, colno, error) {
 // ------------------------------------
 
 // --- TEST CRITIQUE DES VARIABLES ---
-if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
-  console.error("ERREUR : Les variables d'environnement Supabase sont absentes !");
-  // On laisse quand même essayer de charger, mais on prévient
+const rawUrl = import.meta.env.VITE_SUPABASE_URL;
+if (!rawUrl || !rawUrl.startsWith('http')) {
+  console.error("❌ ERREUR PRODUCTION : La variable VITE_SUPABASE_URL est manquante ou invalide sur Vercel !");
+  console.log("Valeur détectée (tronquée) :", rawUrl ? rawUrl.substring(0, 5) + "..." : "RIEN");
+} else {
+  console.log("✅ VITE_SUPABASE_URL détectée.");
 }
 
 const container = document.getElementById("root");
