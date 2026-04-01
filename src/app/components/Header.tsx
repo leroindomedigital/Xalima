@@ -89,7 +89,7 @@ export function Header() {
           </motion.button>
         </div>
 
-        {/* Mobile Menu Overlay - Solid, Minimalist & High Visibility */}
+        {/* Mobile Menu Overlay - Solid, Centralized & High Visibility */}
         <AnimatePresence>
           {mobileMenuOpen && (
             <motion.div 
@@ -99,7 +99,8 @@ export function Header() {
               transition={{ duration: 0.2 }}
               className="fixed inset-0 z-[9999] bg-[#020617] flex flex-col"
             >
-              <div className="flex items-center justify-between p-6 border-b border-white/5 bg-black/20 backdrop-blur-xl">
+              {/* Top Header */}
+              <div className="flex items-center justify-between p-6 bg-black/20 backdrop-blur-xl">
                 <img src="/logo-xalima.png" alt="Xalima" className="h-6 w-auto" />
                 <button 
                   onClick={() => setMobileMenuOpen(false)}
@@ -109,25 +110,27 @@ export function Header() {
                 </button>
               </div>
 
-              <div className="flex-1 overflow-y-auto py-10 px-8">
-                <div className="space-y-6">
+              {/* Main Links - Centered vertically */}
+              <div className="flex-1 flex flex-col items-center justify-center px-8">
+                <div className="w-full space-y-4">
                   {navLinks.map((link, i) => {
                     const isActive = location.pathname === link.path;
                     return (
                       <motion.div
                         key={link.path}
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: i * 0.05 }}
                       >
                         <Link
                           to={link.path}
-                          className={`flex items-center py-4 text-sm font-black uppercase tracking-[0.25em] transition-all ${
-                            isActive ? 'text-indigo-400 translate-x-2' : 'text-white/80 hover:text-white'
+                          className={`flex items-center justify-center py-4 text-sm font-black uppercase tracking-[0.3em] transition-all rounded-2xl ${
+                            isActive 
+                              ? 'text-white bg-indigo-600/20 border border-indigo-500/30' 
+                              : 'text-white/80 hover:text-white'
                           }`}
                           onClick={() => setMobileMenuOpen(false)}
                         >
-                          {isActive && <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full mr-4 shadow-[0_0_10px_rgba(99,102,241,0.5)]" />}
                           {link.name}
                         </Link>
                       </motion.div>
@@ -135,7 +138,8 @@ export function Header() {
                   })}
                 </div>
 
-                <div className="mt-12 pt-12 border-t border-white/5 space-y-5">
+                {/* Bottom Actions */}
+                <div className="w-full mt-12 space-y-4">
                   <Button
                     size="lg"
                     className="w-full h-14 bg-indigo-600 text-white font-black uppercase tracking-widest rounded-2xl text-[10px] shadow-xl shadow-indigo-600/20"
@@ -152,6 +156,7 @@ export function Header() {
                 </div>
               </div>
 
+              {/* Footer Socials */}
               <div className="p-8 pb-10 flex justify-center space-x-10">
                 {['LinkedIn', 'TikTok', 'Instagram'].map((social) => (
                   <span key={social} className="text-[9px] font-black uppercase tracking-widest text-white/30">{social}</span>
