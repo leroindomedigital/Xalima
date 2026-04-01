@@ -22,6 +22,12 @@ export function Login() {
     setLoading(true);
     setError(null);
 
+    // Mode développeur local : Autoriser immédiatement l'accès administrateur
+    if (import.meta.env.DEV && email === 'admin@xalima.sn' && password === 'password123') {
+       navigate('/admin', { replace: true });
+       return;
+    }
+
     const { error: authError } = await supabase.auth.signInWithPassword({
       email,
       password,

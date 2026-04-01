@@ -26,6 +26,7 @@ export function Header() {
   };
 
   return (
+    <>
     <header className="fixed top-0 left-0 right-0 z-[100] transition-all duration-300 border-b border-white/5 bg-[#020617]/40 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <div className="flex items-center justify-between h-16 sm:h-20">
@@ -83,89 +84,97 @@ export function Header() {
           <motion.button
             whileTap={{ scale: 0.9 }}
             className="md:hidden p-2 text-gray-400 hover:text-white rounded-lg border border-white/5"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            onClick={() => setMobileMenuOpen(true)}
           >
-            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+            <Menu size={24} />
           </motion.button>
         </div>
-
-        {/* Mobile Menu Overlay - Solid, Centralized & High Visibility */}
-        <AnimatePresence>
-          {mobileMenuOpen && (
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="fixed inset-0 z-[9999] bg-[#020617] flex flex-col"
-            >
-              {/* Top Header */}
-              <div className="flex items-center justify-between p-6 bg-black/20 backdrop-blur-xl">
-                <img src="/logo-xalima.png" alt="Xalima" className="h-6 w-auto" />
-                <button 
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="p-2 text-white hover:bg-white/10 rounded-xl transition-colors"
-                >
-                  <X size={24} />
-                </button>
-              </div>
-
-              {/* Main Links - Centered vertically */}
-              <div className="flex-1 flex flex-col items-center justify-center px-8">
-                <div className="w-full space-y-4">
-                  {navLinks.map((link, i) => {
-                    const isActive = location.pathname === link.path;
-                    return (
-                      <motion.div
-                        key={link.path}
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: i * 0.05 }}
-                      >
-                        <Link
-                          to={link.path}
-                          className={`flex items-center justify-center py-4 text-sm font-black uppercase tracking-[0.3em] transition-all rounded-2xl ${
-                            isActive 
-                              ? 'text-white bg-indigo-600/20 border border-indigo-500/30' 
-                              : 'text-white/80 hover:text-white'
-                          }`}
-                          onClick={() => setMobileMenuOpen(false)}
-                        >
-                          {link.name}
-                        </Link>
-                      </motion.div>
-                    );
-                  })}
-                </div>
-
-                {/* Bottom Actions */}
-                <div className="w-full mt-12 space-y-4">
-                  <Button
-                    size="lg"
-                    className="w-full h-14 bg-indigo-600 text-white font-black uppercase tracking-widest rounded-2xl text-[10px] shadow-xl shadow-indigo-600/20"
-                    onClick={handleSignup}
-                  >
-                    🚀 S'inscrire maintenant
-                  </Button>
-                  <button
-                    className="w-full h-14 bg-white/5 text-white/90 font-black uppercase tracking-widest rounded-2xl text-[10px] border border-white/10"
-                    onClick={handleLogin}
-                  >
-                    🔐 Espace membre
-                  </button>
-                </div>
-              </div>
-
-              {/* Footer Socials */}
-              <div className="p-8 pb-10 flex justify-center space-x-10">
-                {['LinkedIn', 'TikTok', 'Instagram'].map((social) => (
-                  <span key={social} className="text-[9px] font-black uppercase tracking-widest text-white/30">{social}</span>
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
     </header>
+
+    {/* Full Screen Mobile Menu Overlay */}
+    <AnimatePresence>
+      {mobileMenuOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+          className="fixed inset-0 z-[9999] bg-[#020617] flex flex-col items-center justify-center p-6 h-[100dvh]"
+        >
+          {/* Close button at top right */}
+          <button 
+            onClick={() => setMobileMenuOpen(false)}
+            className="absolute top-6 right-6 p-3 text-white/50 hover:text-white bg-white/5 hover:bg-white/10 rounded-full transition-all"
+          >
+            <X size={28} />
+          </button>
+          
+          <img src="/logo-xalima.png" alt="Xalima" className="h-12 w-auto absolute top-8 left-6 filter drop-shadow-[0_0_10px_rgba(99,102,241,0.2)]" />
+
+          {/* Huge Main Links - Center of screen */}
+          <div className="w-full max-w-sm flex flex-col items-center justify-center space-y-8 my-auto">
+            {navLinks.map((link, i) => {
+              const isActive = location.pathname === link.path;
+              return (
+                <motion.div
+                  key={link.path}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.1 + 0.1, type: "spring" }}
+                >
+                  <Link
+                    to={link.path}
+                    className="relative group flex items-center justify-center"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <span className={`text-3xl font-black uppercase tracking-widest transition-all duration-300 ${
+                      isActive ? 'text-white' : 'text-gray-500 hover:text-gray-300'
+                    }`}>
+                      {link.name}
+                    </span>
+                    {isActive && (
+                      <motion.div 
+                        layoutId="active-mobile-link"
+                        className="absolute -bottom-2 left-1/4 right-1/4 h-1 bg-indigo-500 rounded-full shadow-[0_0_15px_rgba(99,102,241,0.5)]"
+                      />
+                    )}
+                  </Link>
+                </motion.div>
+              );
+            })}
+          </div>
+
+          {/* Bottom Call to Action Buttons */}
+          <div className="w-full max-w-sm space-y-4 mb-8">
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
+              <Button
+                size="lg"
+                className="w-full h-16 bg-indigo-600 hover:bg-indigo-700 text-white font-black uppercase tracking-[0.2em] rounded-2xl text-xs shadow-[0_0_30px_rgba(79,70,229,0.3)] transition-all"
+                onClick={handleSignup}
+              >
+                S'inscrire maintenant
+              </Button>
+            </motion.div>
+          </div>
+          
+          {/* Social Links Footer */}
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.8 }}
+            className="flex justify-center space-x-8 text-gray-500 pb-4"
+          >
+            {['LinkedIn', 'TikTok', 'Instagram'].map(social => (
+              <span key={social} className="text-[10px] font-black uppercase tracking-widest hover:text-white cursor-pointer transition-colors">
+                {social}
+              </span>
+            ))}
+          </motion.div>
+
+        </motion.div>
+      )}
+    </AnimatePresence>
+    </>
   );
 }

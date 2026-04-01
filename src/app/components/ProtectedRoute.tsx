@@ -12,6 +12,10 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
       </div>
     );
   }
+  // Bypass local pour tester le dashboard Admin sans configurer Supabase Auth totalement
+  if (!session && import.meta.env.DEV) {
+     return <>{children}</>;
+  }
 
   if (!session) {
     return <Navigate to="/login" state={{ from: location }} replace />;
