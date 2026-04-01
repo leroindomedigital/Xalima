@@ -121,10 +121,10 @@ export function Header() {
                     >
                       <Link
                         to={link.path}
-                        className={`inline-flex items-center px-6 py-4 rounded-2xl transition-all duration-300 font-black text-lg uppercase tracking-widest ${
+                        className={`inline-flex items-center px-4 py-2.5 rounded-xl transition-all duration-300 font-black text-xs uppercase tracking-[0.2em] border ${
                           isActive
-                            ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20 scale-105'
-                            : 'text-gray-400 hover:text-white'
+                            ? 'bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-600/20 scale-105'
+                            : 'bg-white/5 border-indigo-500/30 text-gray-400 hover:text-white hover:border-indigo-500'
                         }`}
                         onClick={() => setMobileMenuOpen(false)}
                       >
