@@ -51,6 +51,7 @@ export function Register() {
     } catch (err: any) {
       console.error('Erreur inscription:', err);
       setIsError(true);
+      alert("❌ ERREUR DÉTECTÉE :\n\nMessage : " + (err.message || "Aucun message") + "\nCode : " + (err.code || "Sans code") + "\n\nAstuce : Vérifiez si un Adblocker bloque la connexion ou si le Redeploy a bien fini.");
     }
   };
 
