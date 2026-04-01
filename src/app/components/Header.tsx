@@ -13,8 +13,6 @@ export function Header() {
     { name: 'Accueil', path: '/' },
     { name: 'Formations', path: '/formation' },
     { name: 'Cours Universitaires', path: '/cours' },
-    { name: 'Suggérer un cours', path: '/suggerer-cours' },
-    { name: 'Mon Espace', path: '/dashboard' },
     { name: 'Contact', path: '/contact' },
   ];
 
