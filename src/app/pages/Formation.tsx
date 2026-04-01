@@ -406,7 +406,7 @@ export function Formation() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#020617] text-white pt-24 pb-20 overflow-hidden">
+    <div className="min-h-screen bg-[#020617] text-white pt-20 pb-16 overflow-hidden">
       {/* Background Decor */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-indigo-600/5 blur-[120px] rounded-full"></div>
@@ -415,30 +415,30 @@ export function Formation() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Header - Centered v1 style */}
-        <div className="text-center mb-24 max-w-4xl mx-auto">
+        <div className="text-center mb-12 max-w-4xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="flex flex-col items-center"
           >
-            <div className="inline-flex items-center space-x-2 bg-indigo-500/10 border border-indigo-500/20 px-4 py-1.5 rounded-full text-indigo-400 text-[10px] font-bold uppercase tracking-widest mb-10">
+            <div className="inline-flex items-center space-x-2 bg-indigo-500/10 border border-indigo-500/20 px-4 py-1.5 rounded-full text-indigo-400 text-[9px] font-bold uppercase tracking-widest mb-6">
               <GraduationCap className="w-4 h-4" />
               <span>Excellence Sénégalaise</span>
             </div>
-            <h1 className="text-3xl sm:text-6xl lg:text-7xl font-black mb-6 sm:mb-8 leading-[1.1] tracking-tight">
+            <h1 className="text-2xl sm:text-6xl lg:text-7xl font-black mb-6 sm:mb-8 leading-[1.1] tracking-tight">
               Bâtissez votre <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-indigo-600">futur digital</span>.
             </h1>
-            <p className="text-sm sm:text-lg text-gray-500 leading-relaxed mb-8 sm:mb-10 font-normal">
+            <p className="text-xs sm:text-lg text-gray-500 leading-relaxed mb-6 sm:mb-10 font-normal">
               Des programmes certifiants conçus par des experts pour répondre aux exigences du marché du travail au Sénégal.
             </p>
             <Button 
               size="lg"
-              className="h-14 sm:h-16 px-10 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-bold text-base sm:text-lg uppercase tracking-wider shadow-xl shadow-indigo-600/20 transition-all active:scale-95"
+              className="h-12 sm:h-16 px-8 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-bold text-sm sm:text-lg uppercase tracking-wider shadow-xl shadow-indigo-600/20 transition-all active:scale-95"
               onClick={() => setIsLoginModalOpen(true)}
             >
               DÉMARRER MON PARCOURS
-              <ArrowRight className="ml-2 w-6 h-6" />
+              <ArrowRight className="ml-2 w-5 h-5 sm:w-6 sm:h-6" />
             </Button>
           </motion.div>
         </div>
@@ -474,10 +474,10 @@ export function Formation() {
 
             return (
             <div key={category.title}>
-              <div className="flex items-center justify-between mb-8 sm:mb-12">
-                <h2 className="text-xl sm:text-3xl font-black tracking-tight uppercase">{category.title}</h2>
+              <div className="flex items-center justify-between mb-8">
+                <h2 className="text-lg sm:text-3xl font-black tracking-tight uppercase">{category.title}</h2>
                 <div className="h-px flex-grow mx-8 bg-gradient-to-r from-indigo-500/20 to-transparent hidden sm:block"></div>
-                <Badge variant="outline" className="border-white/5 text-gray-500 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">
+                <Badge variant="outline" className="border-white/5 text-gray-500 px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest">
                   {category.items.length} Formations
                 </Badge>
               </div>
@@ -515,11 +515,11 @@ export function Formation() {
                           </div>
                         </div>
 
-                        <CardHeader className="p-5 sm:p-6">
-                          <CardTitle className="text-white text-base sm:text-lg font-black mb-2 tracking-wide uppercase transition-colors group-hover:text-indigo-400">
+                        <CardHeader className="p-4 sm:p-6">
+                          <CardTitle className="text-white text-sm sm:text-lg font-black mb-1.5 tracking-wide uppercase transition-colors group-hover:text-indigo-400">
                             {formation.title}
                           </CardTitle>
-                          <CardDescription className="text-gray-400 text-[12px] sm:text-sm leading-relaxed line-clamp-2 font-normal">
+                          <CardDescription className="text-gray-400 text-[10px] sm:text-sm leading-relaxed line-clamp-2 font-normal">
                             {formation.description}
                           </CardDescription>
                         </CardHeader>
@@ -541,12 +541,12 @@ export function Formation() {
                           )}
                         </div>
 
-                        <CardFooter className="p-6 pt-0 border-none mt-auto flex items-center justify-between bg-transparent">
-                          <div className="text-lg font-black text-white tracking-tight">
+                        <CardFooter className="p-4 pt-0 border-none mt-auto flex items-center justify-between bg-transparent">
+                          <div className="text-base font-black text-white tracking-tight">
                             {formation.price}
                           </div>
                             <Button 
-                              className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl h-10 px-6 font-bold text-[10px] uppercase tracking-widest transition-all active:scale-95"
+                              className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl h-9 px-4 font-bold text-[9px] uppercase tracking-widest transition-all active:scale-95"
                               onClick={() => handleStartRegistration()}
                             >
                             S'INSCRIRE

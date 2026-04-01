@@ -192,25 +192,25 @@ export function CoursUniversitaires() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Header Section */}
-        <div className="text-center mb-16 max-w-4xl mx-auto">
+        <div className="text-center mb-10 max-w-4xl mx-auto">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <div className="inline-flex items-center space-x-2 bg-indigo-500/10 border border-indigo-500/20 px-5 py-2 rounded-full text-indigo-400 text-[10px] font-black uppercase tracking-[0.2em] mb-8">
+            <div className="inline-flex items-center space-x-2 bg-indigo-500/10 border border-indigo-500/20 px-4 py-1.5 rounded-full text-indigo-400 text-[9px] font-black uppercase tracking-[0.2em] mb-6">
               <GraduationCap className="w-4 h-4" />
               <span>Plus de 1000 supports pédagogiques certifiés</span>
             </div>
             
-            <h1 className="text-3xl sm:text-7xl font-black mb-6 sm:mb-8 leading-[1.05] tracking-tight">
+            <h1 className="text-2xl sm:text-7xl font-black mb-4 sm:mb-8 leading-[1.05] tracking-tight">
               L'Université <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-blue-400 to-indigo-600">Sénégalaise</span>.
             </h1>
-            <p className="text-sm sm:text-xl text-gray-400 leading-relaxed mb-8 sm:mb-12 font-medium">
+            <p className="text-xs sm:text-xl text-gray-400 leading-relaxed mb-6 sm:mb-12 font-medium">
                Explorez un catalogue riche couvrant toutes les <span className="text-white">universités publiques</span> du Sénégal.
             </p>
             
             <div className="relative w-full max-w-3xl group mx-auto">
               <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500/20 to-blue-500/20 rounded-3xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200" />
-              <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 sm:w-6 sm:h-6 text-gray-500 group-focus-within:text-indigo-400 transition-colors" />
+              <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 group-focus-within:text-indigo-400 transition-colors" />
               <Input 
-                 className="relative w-full h-14 sm:h-16 bg-[#0c1222]/80 backdrop-blur-xl border-white/10 rounded-2xl pl-14 sm:pl-16 pr-6 text-base sm:text-lg font-bold focus:border-indigo-500/50 transition-all outline-none"
+                 className="relative w-full h-12 sm:h-16 bg-[#0c1222]/80 backdrop-blur-xl border-white/10 rounded-2xl pl-14 sm:pl-16 pr-6 text-sm sm:text-lg font-bold focus:border-indigo-500/50 transition-all outline-none"
                  placeholder="Rechercher une filière..."
                  value={searchQuery}
                  onChange={(e) => setSearchQuery(e.target.value)}
@@ -220,16 +220,16 @@ export function CoursUniversitaires() {
         </div>
 
         {/* Global Catalog Highlights */}
-        <div className="flex flex-wrap justify-center gap-6 mb-20">
+        <div className="flex flex-wrap justify-center gap-3 sm:gap-6 mb-10">
            {[
              { label: "25+ Filières", icon: Layout },
              { label: "Vidéos 4K", icon: Video },
              { label: "Supports PDF", icon: FileText },
              { label: "UCAD / UGB / UASZ", icon: Landmark }
            ].map((badge, i) => (
-             <div key={i} className="flex items-center gap-3 px-6 py-3 rounded-2xl bg-white/5 border border-white/10">
-                <badge.icon className="w-5 h-5 text-indigo-500" />
-                <span className="text-[11px] font-black uppercase tracking-widest">{badge.label}</span>
+             <div key={i} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10">
+                <badge.icon className="w-4 h-4 text-indigo-500" />
+                <span className="text-[9px] font-black uppercase tracking-widest">{badge.label}</span>
              </div>
            ))}
         </div>
@@ -256,30 +256,30 @@ export function CoursUniversitaires() {
         </div>
 
         {/* Secondary Filters */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-16 p-8 bg-white/5 rounded-3xl border border-white/10">
-           <div className="space-y-3">
-              <label className="text-[10px] font-black text-indigo-400 uppercase tracking-widest pl-2">Affiner par Filière</label>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10 p-4 sm:p-8 bg-white/5 rounded-2xl border border-white/10">
+           <div className="space-y-2">
+              <label className="text-[9px] font-black text-indigo-400 uppercase tracking-widest pl-2">Affiner par Filière</label>
               <select 
                 value={selectedFiliere}
                 onChange={(e) => setSelectedFiliere(e.target.value)}
-                className="w-full h-12 bg-[#020617] border border-white/10 rounded-xl px-4 text-xs font-bold text-white focus:border-indigo-500 outline-none"
+                className="w-full h-10 bg-[#020617] border border-white/10 rounded-xl px-4 text-[10px] font-bold text-white focus:border-indigo-500 outline-none"
               >
                  {activeFilieres.map(f => <option key={f} value={f}>{f}</option>)}
               </select>
            </div>
-           <div className="space-y-3">
-              <label className="text-[10px] font-black text-indigo-400 uppercase tracking-widest pl-2">Université d'Origine</label>
+           <div className="space-y-2">
+              <label className="text-[9px] font-black text-indigo-400 uppercase tracking-widest pl-2">Université d'Origine</label>
               <select 
                 value={selectedUniv}
                 onChange={(e) => setSelectedUniv(e.target.value)}
-                className="w-full h-12 bg-[#020617] border border-white/10 rounded-xl px-4 text-xs font-bold text-white focus:border-indigo-500 outline-none"
+                className="w-full h-10 bg-[#020617] border border-white/10 rounded-xl px-4 text-[10px] font-bold text-white focus:border-indigo-500 outline-none"
               >
                  {UNIVERSITIES.map(u => <option key={u} value={u}>{u === 'Tous' ? 'Toutes les Universités' : u}</option>)}
               </select>
            </div>
            <div className="flex items-end">
-              <div className="w-full h-12 bg-indigo-600/10 border border-indigo-500/20 rounded-xl flex items-center justify-center px-4">
-                 <span className="text-[11px] font-black uppercase text-indigo-400 tracking-wider">
+              <div className="w-full h-10 bg-indigo-600/10 border border-indigo-500/20 rounded-xl flex items-center justify-center px-4">
+                 <span className="text-[10px] font-black uppercase text-indigo-400 tracking-wider">
                     {filteredCourses.length} Cours Disponibles
                  </span>
               </div>
