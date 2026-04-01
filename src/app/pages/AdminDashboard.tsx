@@ -137,8 +137,8 @@ export function AdminDashboard() {
 
         <div className="grid lg:grid-cols-5 gap-10">
           
-          {/* Admin Sidebar */}
-          <div className="lg:col-span-1 space-y-2">
+          {/* Admin Sidebar - Horizontal Scroll on Mobile */}
+          <div className="lg:col-span-1 flex lg:flex-col gap-2 overflow-x-auto pb-4 lg:pb-0 scrollbar-hide">
             {[
               { id: 'overview', icon: LayoutDashboard, label: "Vue d'ensemble" },
               { id: 'courses', icon: BookOpen, label: "Gestion Formations" },
@@ -158,9 +158,9 @@ export function AdminDashboard() {
                     : "text-gray-400 hover:bg-white/5 hover:text-white"
                 }`}
               >
-                <item.icon className={`w-5 h-5 transition-transform duration-300 group-hover:scale-110 ${activeTab === item.id ? "text-white" : "text-gray-400"}`} />
-                <span className="text-sm">{item.label}</span>
-                {activeTab === item.id && <ChevronRight className="ml-auto w-4 h-4" />}
+                <item.icon className={`w-5 h-5 transition-transform duration-300 group-hover:scale-110 shrink-0 ${activeTab === item.id ? "text-white" : "text-gray-400"}`} />
+                <span className="text-sm whitespace-nowrap">{item.label}</span>
+                <ChevronRight className={`ml-auto w-4 h-4 hidden lg:block ${activeTab === item.id ? "opacity-100" : "opacity-0"}`} />
               </button>
             ))}
 
@@ -433,8 +433,8 @@ export function AdminDashboard() {
                       <thead>
                          <tr className="border-b border-white/10">
                             <th className="px-8 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Apprenant</th>
-                            <th className="px-8 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Programme</th>
-                            <th className="px-8 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Date</th>
+                            <th className="px-8 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest hidden md:table-cell">Programme</th>
+                            <th className="px-8 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest hidden lg:table-cell">Date</th>
                             <th className="px-8 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Montant</th>
                             <th className="px-8 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Statut</th>
                             <th className="px-8 py-6"></th>
@@ -454,10 +454,10 @@ export function AdminDashboard() {
                                      </div>
                                   </div>
                                </td>
-                               <td className="px-8 py-6 font-medium text-gray-300 text-sm">
+                               <td className="px-8 py-6 font-medium text-gray-300 text-sm hidden md:table-cell">
                                   {reg.course}
                                </td>
-                               <td className="px-8 py-6 text-xs text-gray-400 font-bold uppercase tracking-widest">
+                               <td className="px-8 py-6 text-xs text-gray-400 font-bold uppercase tracking-widest hidden lg:table-cell">
                                   {reg.date}
                                </td>
                                <td className="px-8 py-6 font-black text-white">

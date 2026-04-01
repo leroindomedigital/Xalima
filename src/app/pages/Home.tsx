@@ -116,14 +116,14 @@ export function Home() {
               <div className="space-y-6">
                 <motion.h1 
                   variants={itemVariants}
-                  className="text-6xl sm:text-7xl lg:text-8xl font-black leading-[1.05] tracking-tight"
+                  className="text-4xl sm:text-7xl lg:text-8xl font-black leading-[1.1] sm:leading-[1.05] tracking-tight"
                 >
                   Bâtir le <br /> 
                   <span className="text-white">Sénégal de Demain</span>.
                 </motion.h1>
                 <motion.p 
                   variants={itemVariants}
-                  className="text-xl text-gray-400 max-w-xl leading-relaxed font-normal italic border-l-2 border-indigo-500/30 pl-6"
+                  className="text-lg sm:text-xl text-gray-400 max-w-xl leading-relaxed font-normal italic border-l-2 border-indigo-500/30 pl-4 sm:pl-6"
                 >
                   L'alliance de l'excellence académique et de la maîtrise technologique pour propulser votre carrière au sommet.
                 </motion.p>
@@ -131,7 +131,7 @@ export function Home() {
 
               <motion.div 
                 variants={itemVariants}
-                className="flex flex-col sm:flex-row gap-4"
+                className="flex flex-col sm:flex-row gap-4 pt-4 sm:pt-0"
               >
                 <Link to="/register" className="w-full sm:w-auto">
                   <Button

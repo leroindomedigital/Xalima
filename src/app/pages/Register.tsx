@@ -9,10 +9,12 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Link, useNavigate } from 'react-router';
+import { supabase } from '../../lib/supabase';
 
 export function Register() {
   const navigate = useNavigate();
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isError, setIsError] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -22,24 +24,34 @@ export function Register() {
     interest: ''
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsError(false);
     
-    // Save to localStorage for Admin Dashboard simulation
-    const existingRegistrations = JSON.parse(localStorage.getItem('xalima_registrations') || '[]');
-    const newRegistration = {
-      ...formData,
-      id: Date.now(),
-      date: new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' }),
-      status: 'En attente'
-    };
-    
-    localStorage.setItem('xalima_registrations', JSON.stringify([newRegistration, ...existingRegistrations]));
-    
-    setIsSubmitted(true);
-    setTimeout(() => {
-      navigate('/dashboard');
-    }, 3000);
+    try {
+      // Sauvegarde réelle dans Supabase
+      const { error } = await supabase.from('registrations').insert([
+        {
+          full_name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          level: formData.level,
+          city: formData.city,
+          interest: formData.interest,
+          status: 'En attente'
+        }
+      ]);
+
+      if (error) throw error;
+
+      setIsSubmitted(true);
+      setTimeout(() => {
+        navigate('/');
+      }, 3000);
+    } catch (err) {
+      console.error('Erreur inscription:', err);
+      setIsError(true);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
