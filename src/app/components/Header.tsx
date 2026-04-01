@@ -89,23 +89,23 @@ export function Header() {
           </motion.button>
         </div>
 
-        {/* Mobile Menu Overlay - Clear white version */}
+        {/* Mobile Menu Overlay - Dark & Small minimalist version */}
         <AnimatePresence>
           {mobileMenuOpen && (
             <motion.div 
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 z-[200] bg-white lg:hidden flex flex-col p-6 pt-20"
+              className="fixed inset-0 z-[200] bg-[#020617] lg:hidden flex flex-col p-6 pt-20"
             >
               <div className="flex items-center justify-between mb-12 relative z-10">
-                <img src="/logo-xalima.png" alt="Xalima" className="h-7 w-auto" />
+                <img src="/logo-xalima.png" alt="Xalima" className="h-6 w-auto" />
                 <button 
                   onClick={() => setMobileMenuOpen(false)}
-                  className="p-2 rounded-xl bg-gray-100 text-gray-900 active:scale-90 transition-transform"
+                  className="p-2.5 rounded-xl bg-white/5 border border-white/10 text-white active:scale-90 transition-transform"
                 >
-                  <X size={20} />
+                  <X size={18} />
                 </button>
               </div>
 
@@ -113,16 +113,16 @@ export function Header() {
                 {navLinks.map((link, i) => (
                   <motion.div
                     key={link.path}
-                    initial={{ opacity: 0, x: -10 }}
+                    initial={{ opacity: 0, x: 10 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.05 }}
                   >
                     <Link
                       to={link.path}
-                      className={`text-lg font-bold uppercase tracking-widest transition-all ${
+                      className={`text-sm font-black uppercase tracking-[0.2em] transition-all ${
                         location.pathname === link.path
-                          ? 'text-indigo-600'
-                          : 'text-gray-900 hover:text-indigo-500'
+                          ? 'text-white'
+                          : 'text-gray-500 hover:text-white'
                       }`}
                       onClick={() => setMobileMenuOpen(false)}
                     >
@@ -133,25 +133,25 @@ export function Header() {
               </div>
 
               <div className="mt-auto space-y-8 relative z-10 pb-6">
-                <div className="h-px bg-gray-100 w-full" />
+                <div className="h-px bg-white/5 w-full" />
                 <div className="flex flex-col gap-3">
                   <Button
-                    className="h-12 w-full bg-indigo-600 text-white font-bold uppercase tracking-widest rounded-xl text-[10px] shadow-lg shadow-indigo-600/10 active:scale-95 transition-transform"
+                    className="h-11 w-full bg-indigo-600 text-white font-black uppercase tracking-widest rounded-xl text-[9px] shadow-lg shadow-indigo-600/20 active:scale-95 transition-transform"
                     onClick={handleSignup}
                   >
                     S'INSCRIRE MAINTENANT
                   </Button>
                   <button
-                    className="h-12 w-full bg-white text-gray-900 font-bold uppercase tracking-widest rounded-xl text-[10px] border border-gray-200 active:scale-95 transition-transform"
+                    className="h-11 w-full bg-white/5 text-gray-400 font-black uppercase tracking-widest rounded-xl text-[9px] border border-white/10 active:scale-95 transition-transform"
                     onClick={handleLogin}
                   >
                     ACCÈS MEMBRE
                   </button>
                 </div>
                 
-                <div className="flex items-center justify-center space-x-8 text-gray-400">
+                <div className="flex items-center justify-center space-x-8 text-gray-600">
                   {['LinkedIn', 'TikTok', 'Instagram'].map((social) => (
-                    <span key={social} className="text-[9px] uppercase font-bold tracking-[0.2em]">{social}</span>
+                    <span key={social} className="text-[8px] uppercase font-black tracking-[0.3em]">{social}</span>
                   ))}
                 </div>
               </div>
