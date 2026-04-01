@@ -109,27 +109,31 @@ export function Header() {
                 </button>
               </div>
 
-              <div className="flex flex-col space-y-6 relative z-10 pl-2">
-                {navLinks.map((link, i) => (
-                  <motion.div
-                    key={link.path}
-                    initial={{ opacity: 0, x: 10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.05 }}
-                  >
-                    <Link
-                      to={link.path}
-                      className={`text-sm font-black uppercase tracking-[0.2em] transition-all ${
-                        location.pathname === link.path
-                          ? 'text-white'
-                          : 'text-gray-500 hover:text-white'
-                      }`}
-                      onClick={() => setMobileMenuOpen(false)}
+              <div className="flex flex-col space-y-4 relative z-10">
+                {navLinks.map((link, i) => {
+                  const isActive = location.pathname === link.path;
+                  return (
+                    <motion.div
+                      key={link.path}
+                      initial={{ opacity: 0, x: 10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.05 }}
                     >
-                      {link.name}
-                    </Link>
-                  </motion.div>
-                ))}
+                      <Link
+                        to={link.path}
+                        className={`inline-flex items-center px-5 py-3 rounded-2xl transition-all duration-300 font-black text-[11px] uppercase tracking-[0.25em] ${
+                          isActive
+                            ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20 scale-105'
+                            : 'text-gray-500 hover:text-white'
+                        }`}
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        {link.name}
+                        {isActive && <span className="ml-3 w-1 h-1 rounded-full bg-white animate-pulse" />}
+                      </Link>
+                    </motion.div>
+                  );
+                })}
               </div>
 
               <div className="mt-auto space-y-8 relative z-10 pb-6">
