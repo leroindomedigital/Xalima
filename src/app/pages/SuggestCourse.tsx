@@ -1,15 +1,31 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { GraduationCap, Send, Mail, User, BookOpen, MessageSquare, Sparkles } from 'lucide-react';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Send, Mail, User, BookOpen, MessageSquare, Sparkles, CheckCircle2 } from 'lucide-react';
 import { Button } from '../components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
-import { ImageWithFallback } from '../components/figma/ImageWithFallback';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 
 export default function SuggestCourse() {
+  const [formData, setFormData] = useState({ name: '', email: '', title: '', reason: '' });
+  const [isSent, setIsSent] = useState(false);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate form submission
-    alert('Merci pour votre suggestion ! Nous l\'examinerons prochainement.');
+    const subject = encodeURIComponent(`[Suggestion Cours] ${formData.title}`);
+    const body = encodeURIComponent(
+      `Bonjour Xalima,\n\n` +
+      `Nom : ${formData.name}\n` +
+      `Email : ${formData.email}\n\n` +
+      `Cours suggéré : ${formData.title}\n\n` +
+      `Pourquoi ce cours est important :\n${formData.reason}\n\n` +
+      `---\nEnvoyé depuis xalima.vercel.app`
+    );
+    window.location.href = `mailto:xalimacour@gmail.com?subject=${subject}&body=${body}`;
+    setIsSent(true);
+    setTimeout(() => setIsSent(false), 5000);
   };
 
   return (
@@ -57,7 +73,10 @@ export default function SuggestCourse() {
                   </label>
                   <input 
                     type="text" 
+                    name="name"
                     required 
+                    value={formData.name}
+                    onChange={handleChange}
                     placeholder="Votre nom"
                     className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white focus:border-indigo-500 font-bold outline-none transition-all"
                   />
@@ -68,7 +87,10 @@ export default function SuggestCourse() {
                   </label>
                   <input 
                     type="email" 
+                    name="email"
                     required 
+                    value={formData.email}
+                    onChange={handleChange}
                     placeholder="votre@email.com"
                     className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white focus:border-indigo-500 font-bold outline-none transition-all"
                   />
@@ -81,7 +103,10 @@ export default function SuggestCourse() {
                 </label>
                 <input 
                   type="text" 
+                  name="title"
                   required 
+                  value={formData.title}
+                  onChange={handleChange}
                   placeholder="Ex: Intelligence Artificielle au Sénégal"
                   className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white focus:border-indigo-500 font-bold outline-none transition-all"
                 />
@@ -93,11 +118,28 @@ export default function SuggestCourse() {
                 </label>
                 <textarea 
                   required 
+                  name="reason"
                   rows={4}
+                  value={formData.reason}
+                  onChange={handleChange}
                   placeholder="Décrivez brièvement l'impact attendu..."
                   className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white focus:border-indigo-500 font-bold outline-none transition-all resize-none"
                 />
               </div>
+
+              <AnimatePresence>
+                {isSent && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    className="flex items-center gap-3 p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl text-emerald-400 text-sm font-bold"
+                  >
+                    <CheckCircle2 className="w-5 h-5 shrink-0" />
+                    <span>Votre client mail s'est ouvert ! Envoyez vers xalimacour@gmail.com.</span>
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
               <Button 
                 type="submit" 
@@ -105,6 +147,10 @@ export default function SuggestCourse() {
               >
                 <Send className="h-5 w-5" /> ENVOYER
               </Button>
+
+              <p className="text-center text-[10px] text-gray-600 font-bold uppercase tracking-widest">
+                Suggestion envoyée à <span className="text-indigo-400">xalimacour@gmail.com</span>
+              </p>
             </form>
           </CardContent>
         </Card>
