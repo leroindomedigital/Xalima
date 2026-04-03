@@ -1,10 +1,9 @@
 import { Outlet, ScrollRestoration } from 'react-router';
 import { Header } from './Header';
-import { Facebook, Linkedin, Instagram } from 'lucide-react';
-import { SOCIAL_LINKS } from '../../lib/constants';
+import { Facebook, Twitter, Linkedin, Instagram } from 'lucide-react';
 
-const Tiktok = (props: any) => (
-  <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-music-2">
+const TiktokIcon = (props: any) => (
+  <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="8" cy="18" r="4"/>
     <path d="M12 18V2l7 4"/>
   </svg>
@@ -28,24 +27,6 @@ export function Layout() {
               <p className="text-gray-500 text-sm leading-relaxed font-normal">
                 La plateforme de référence pour la formation digitale et l'excellence académique au Sénégal.
               </p>
-              <div className="flex gap-4 pt-4">
-                {[
-                  { Icon: Facebook, url: SOCIAL_LINKS.facebook },
-                  { Icon: Linkedin, url: SOCIAL_LINKS.linkedin },
-                  { Icon: Instagram, url: SOCIAL_LINKS.instagram },
-                  { Icon: Tiktok, url: SOCIAL_LINKS.tiktok }
-                ].map(({ Icon, url }, i) => (
-                  <a 
-                    key={i} 
-                    href={url} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="text-gray-500 hover:text-indigo-400 transition-colors"
-                  >
-                    <Icon className="w-5 h-5" />
-                  </a>
-                ))}
-              </div>
             </div>
             
             <div className="space-y-6">
@@ -62,16 +43,27 @@ export function Layout() {
             </div>
 
             <div className="space-y-6">
-              <h4 className="text-[10px] font-bold text-white uppercase tracking-[0.2em]">Ressources</h4>
-              <ul className="space-y-4">
-                {['À propos', 'Blog', 'FAQ', 'Aide'].map((item) => (
-                  <li key={item}>
-                    <a href="#" className="text-gray-500 hover:text-indigo-400 text-xs font-bold uppercase tracking-widest transition-colors">
-                      {item}
-                    </a>
-                  </li>
+              <h4 className="text-[10px] font-bold text-white uppercase tracking-[0.2em]">Nous Suivre</h4>
+              <div className="flex flex-wrap gap-3">
+                {[
+                  { Icon: Facebook, href: "https://www.facebook.com/profile.php?id=61586029179039", label: "Facebook" },
+                  { Icon: Twitter, href: "https://x.com/xalima2026", label: "Twitter" },
+                  { Icon: Linkedin, href: "https://www.linkedin.com/company/xalimaa/about/?viewAsMember=true", label: "LinkedIn" },
+                  { Icon: Instagram, href: "https://www.instagram.com/xali_ma2026/", label: "Instagram" },
+                  { Icon: TiktokIcon, href: "https://www.tiktok.com/@xalimacour1?lang=fr", label: "TikTok" },
+                ].map(({ Icon, href, label }) => (
+                  <a
+                    key={label}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={label}
+                    className="bg-white/5 p-2.5 rounded-xl border border-white/10 hover:bg-indigo-600 hover:border-indigo-500 transition-all"
+                  >
+                    <Icon className="w-4 h-4 text-gray-400 hover:text-white" />
+                  </a>
                 ))}
-              </ul>
+              </div>
             </div>
 
             <div className="space-y-6">

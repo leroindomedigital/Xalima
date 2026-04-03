@@ -6,7 +6,6 @@ import { Mail, MessageSquare, Facebook, Twitter, Linkedin, Instagram, Phone, Map
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
-import { SOCIAL_LINKS } from '../../lib/constants';
 
 const Tiktok = (props: any) => (
   <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-music-2">
@@ -92,19 +91,13 @@ export function Contact() {
             <div className="pt-8 border-t border-white/5">
               <div className="flex gap-4">
                 {[
-                  { Icon: Facebook, url: SOCIAL_LINKS.facebook },
-                  { Icon: Twitter, url: SOCIAL_LINKS.twitter },
-                  { Icon: Linkedin, url: SOCIAL_LINKS.linkedin },
-                  { Icon: Instagram, url: SOCIAL_LINKS.instagram },
-                  { Icon: Tiktok, url: SOCIAL_LINKS.tiktok }
-                ].map(({ Icon, url }, i) => (
-                  <a 
-                    key={i} 
-                    href={url} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="bg-white/5 p-3 rounded-xl border border-white/10 hover:bg-indigo-600 transition-all"
-                  >
+                  { Icon: Facebook, href: "https://www.facebook.com/profile.php?id=61586029179039" },
+                  { Icon: Twitter, href: "https://x.com/xalima2026" },
+                  { Icon: Linkedin, href: "https://www.linkedin.com/company/xalimaa/about/?viewAsMember=true" },
+                  { Icon: Instagram, href: "https://www.instagram.com/xali_ma2026/" },
+                  { Icon: Tiktok, href: "https://www.tiktok.com/@xalimacour1?lang=fr" },
+                ].map(({ Icon, href }, i) => (
+                  <a key={i} href={href} target="_blank" rel="noopener noreferrer" className="bg-white/5 p-3 rounded-xl border border-white/10 hover:bg-indigo-600 transition-all">
                     <Icon className="w-5 h-5" />
                   </a>
                 ))}
