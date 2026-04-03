@@ -192,30 +192,58 @@ export function CoursUniversitaires() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
-        {/* Header Section */}
-        <div className="text-center mb-10 max-w-4xl mx-auto">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+        {/* Header Section - Split Layout */}
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center mb-16">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col items-start text-left">
             <div className="inline-flex items-center space-x-2 bg-indigo-500/10 border border-indigo-500/20 px-4 py-1.5 rounded-full text-indigo-400 text-[9px] font-black uppercase tracking-[0.2em] mb-6">
               <GraduationCap className="w-4 h-4" />
               <span>Plus de 1000 supports pédagogiques certifiés</span>
             </div>
             
-            <h1 className="text-2xl sm:text-7xl font-black mb-4 sm:mb-8 leading-[1.05] tracking-tight">
-              L'Université <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-blue-400 to-indigo-600">Sénégalaise</span>.
+            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black mb-4 sm:mb-6 leading-[1.05] tracking-tight">
+              L'Université <br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-blue-400 to-indigo-600">Sénégalaise</span>.
             </h1>
-            <p className="text-xs sm:text-xl text-gray-400 leading-relaxed mb-6 sm:mb-12 font-medium">
-               Explorez un catalogue riche couvrant toutes les <span className="text-white">universités publiques</span> du Sénégal.
+            <p className="text-sm sm:text-lg text-gray-400 border-l-2 border-indigo-500/30 pl-4 sm:pl-6 leading-relaxed mb-8 font-normal italic">
+               Explorez un catalogue riche couvrant toutes les <span className="text-white font-bold">universités publiques</span> du Sénégal.
             </p>
             
-            <div className="relative w-full max-w-3xl group mx-auto">
+            <div className="relative w-full max-w-xl group">
               <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500/20 to-blue-500/20 rounded-3xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200" />
               <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 group-focus-within:text-indigo-400 transition-colors" />
               <Input 
-                 className="relative w-full h-12 sm:h-16 bg-[#0c1222]/80 backdrop-blur-xl border-white/10 rounded-2xl pl-14 sm:pl-16 pr-6 text-sm sm:text-lg font-bold focus:border-indigo-500/50 transition-all outline-none"
+                 className="relative w-full h-14 bg-[#0c1222]/80 backdrop-blur-xl border-white/10 rounded-2xl pl-14 pr-6 text-sm font-bold focus:border-indigo-500/50 transition-all outline-none"
                  placeholder="Rechercher une filière..."
                  value={searchQuery}
                  onChange={(e) => setSearchQuery(e.target.value)}
               />
+            </div>
+          </motion.div>
+
+          {/* Right Hero Image */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="relative hidden lg:block"
+          >
+            <div className="relative z-10 rounded-[3.5rem] overflow-hidden border border-white/10 shadow-[0_0_80px_rgba(79,70,229,0.15)] group">
+              <ImageWithFallback
+                src="/images/illustrations/cours_hero.jpg"
+                alt="Étudiant universitaire Xalima"
+                className="w-full h-[500px] object-cover object-top transition-transform duration-1000 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-[#020617]/10 to-transparent opacity-70" />
+              <div className="absolute bottom-10 left-10 right-10 bg-white/5 backdrop-blur-2xl border border-white/10 p-6 rounded-3xl">
+                <div className="flex items-center space-x-4">
+                  <div className="w-12 h-12 bg-indigo-600 rounded-xl flex items-center justify-center">
+                    <GraduationCap className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <div className="text-white font-black uppercase tracking-wider text-sm">UCAD · UGB · UASZ</div>
+                    <div className="text-indigo-400 text-[10px] font-bold uppercase tracking-widest">Cours 100% gratuits</div>
+                  </div>
+                </div>
+              </div>
             </div>
           </motion.div>
         </div>
