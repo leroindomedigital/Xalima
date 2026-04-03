@@ -451,9 +451,9 @@ export function Formation() {
           >
              <div className="relative z-10 rounded-[3.5rem] overflow-hidden border border-white/10 shadow-[0_0_80px_rgba(79,70,229,0.15)] group">
                 <ImageWithFallback
-                  src="/images/illustrations/professional_meeting.jpg"
-                  alt="Étudiants Xalima"
-                  className="w-full h-[550px] object-cover transition-transform duration-1000 group-hover:scale-105"
+                  src="/images/illustrations/formation_hero.jpg"
+                  alt="Étudiante Xalima"
+                  className="w-full h-[550px] object-cover transition-transform duration-1000 group-hover:scale-105 object-top"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-[#020617]/20 to-transparent opacity-80" />
                 
