@@ -44,6 +44,7 @@ type Course = {
   image: string;
   popular: boolean;
   level: string;
+  url?: string;
 };
 
 const ALL_COURSES: Course[] = [
@@ -432,7 +433,7 @@ function CourseCard({ course, progress, onPlayVideo, onReadPdf }: { course: Cour
         
         {hasVideo && hasPdf && (
            <Button variant="outline" onClick={onReadPdf} className="w-full h-10 sm:h-11 bg-white/5 border-white/10 rounded-xl font-black text-[9px] uppercase hover:bg-white/10">
-              <Download className="w-3.5 h-3.5 mr-2" /> PDF
+              <Download className="w-3.5 h-3.5 mr-2" /> Voir le PDF
            </Button>
         )}
       </CardFooter>
@@ -579,7 +580,16 @@ function PdfReaderModal({ course, initialProgress, onClose }: { course: Course, 
                     <button onClick={() => setZoom(z => Math.min(2, z + 0.2))} className="p-2 hover:bg-white/10 rounded-md transition-colors"><ZoomIn className="w-4 h-4" /></button>
                  </div>
                  
-                 <Button className="h-9 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-[10px] font-black uppercase px-4 hidden sm:flex">
+                 <Button 
+                   className="h-9 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-[10px] font-black uppercase px-4 hidden sm:flex"
+                   onClick={() => {
+                     if (course.url) {
+                       window.open(course.url, '_blank');
+                     } else {
+                       alert('PDF non disponible pour ce cours.');
+                     }
+                   }}
+                 >
                     <Download className="w-3.5 h-3.5 mr-2" /> Télécharger
                  </Button>
                  

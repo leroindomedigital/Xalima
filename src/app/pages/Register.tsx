@@ -15,6 +15,7 @@ export function Register() {
   const navigate = useNavigate();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isError, setIsError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -27,9 +28,10 @@ export function Register() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsError(false);
+    setErrorMessage('');
     
     try {
-      // Sauvegarde réelle dans Supabase
+      // Tentative d'insert complet avec tous les champs
       const { error } = await supabase.from('registrations').insert([
         {
           full_name: formData.name,
@@ -42,7 +44,22 @@ export function Register() {
         }
       ]);
 
-      if (error) throw error;
+      if (error) {
+        // Si erreur de colonne inconnue, retenter avec seulement les champs de base
+        if (error.code === '42703' || error.message?.includes('column')) {
+          const { error: error2 } = await supabase.from('registrations').insert([
+            {
+              full_name: formData.name,
+              email: formData.email,
+              phone: formData.phone,
+              status: 'En attente'
+            }
+          ]);
+          if (error2) throw error2;
+        } else {
+          throw error;
+        }
+      }
 
       setIsSubmitted(true);
       setTimeout(() => {
@@ -50,6 +67,7 @@ export function Register() {
       }, 3000);
     } catch (err: any) {
       console.error('Erreur inscription:', err);
+      setErrorMessage(err.message || 'Erreur inconnue');
       setIsError(true);
     }
   };
@@ -238,9 +256,14 @@ export function Register() {
                       </div>
 
                       {isError && (
-                        <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-500 text-xs font-bold flex items-center gap-3">
-                          <AlertCircle className="w-5 h-5 shrink-0" />
-                          <span>Une erreur de connexion est survenue. Vérifiez vos paramètres Vercel.</span>
+                        <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-500 text-xs font-bold flex flex-col gap-2">
+                          <div className="flex items-center gap-3">
+                            <AlertCircle className="w-5 h-5 shrink-0" />
+                            <span>Erreur lors de l'inscription. Veuillez réessayer.</span>
+                          </div>
+                          {errorMessage && (
+                            <span className="text-red-400/70 font-normal pl-8 break-all">{errorMessage}</span>
+                          )}
                         </div>
                       )}
 
