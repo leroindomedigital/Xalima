@@ -414,32 +414,61 @@ export function Formation() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Header - Centered v1 style */}
-        <div className="text-center mb-12 max-w-4xl mx-auto">
+        {/* Header - Split Layout like Home */}
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center mb-24 max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col items-center"
+            className="flex flex-col items-start text-left"
           >
             <div className="inline-flex items-center space-x-2 bg-indigo-500/10 border border-indigo-500/20 px-4 py-1.5 rounded-full text-indigo-400 text-[9px] font-bold uppercase tracking-widest mb-6">
               <GraduationCap className="w-4 h-4" />
               <span>Excellence Sénégalaise</span>
             </div>
-            <h1 className="text-2xl sm:text-6xl lg:text-7xl font-black mb-6 sm:mb-8 leading-[1.1] tracking-tight">
+            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black mb-6 sm:mb-8 leading-[1.1] tracking-tight">
               Bâtissez votre <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-indigo-600">futur digital</span>.
             </h1>
-            <p className="text-xs sm:text-lg text-gray-500 leading-relaxed mb-6 sm:mb-10 font-normal">
+            <p className="text-sm sm:text-lg text-gray-500 border-l-2 border-indigo-500/30 pl-4 sm:pl-6 leading-relaxed mb-6 sm:mb-10 font-normal italic">
               Des programmes certifiants conçus par des experts pour répondre aux exigences du marché du travail au Sénégal.
             </p>
             <Button 
               size="lg"
-              className="h-12 sm:h-16 px-8 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-bold text-sm sm:text-lg uppercase tracking-wider shadow-xl shadow-indigo-600/20 transition-all active:scale-95"
-              onClick={() => setIsLoginModalOpen(true)}
+              className="h-14 sm:h-16 px-8 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-bold text-sm sm:text-lg uppercase tracking-wider shadow-xl shadow-indigo-600/20 transition-all active:scale-95"
+              onClick={() => navigate('/register')}
             >
               DÉMARRER MON PARCOURS
               <ArrowRight className="ml-2 w-5 h-5 sm:w-6 sm:h-6" />
             </Button>
+          </motion.div>
+
+          {/* Right Hero Image */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="relative hidden lg:block"
+          >
+             <div className="relative z-10 rounded-[3.5rem] overflow-hidden border border-white/10 shadow-[0_0_80px_rgba(79,70,229,0.15)] group">
+                <ImageWithFallback
+                  src="/images/illustrations/professional_meeting.jpg"
+                  alt="Étudiants Xalima"
+                  className="w-full h-[550px] object-cover transition-transform duration-1000 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-[#020617]/20 to-transparent opacity-80" />
+                
+                <div className="absolute bottom-10 left-10 right-10 bg-white/5 backdrop-blur-2xl border border-white/10 p-6 rounded-3xl">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-12 h-12 bg-indigo-600 rounded-xl flex items-center justify-center">
+                      <ShieldCheck className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <div className="text-white font-black uppercase tracking-wider text-sm">Validé par les experts</div>
+                      <div className="text-indigo-400 text-[10px] font-bold uppercase tracking-widest">Diplômes certifiants 100%</div>
+                    </div>
+                  </div>
+                </div>
+             </div>
           </motion.div>
         </div>
 
