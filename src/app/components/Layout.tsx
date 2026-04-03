@@ -1,5 +1,14 @@
 import { Outlet, ScrollRestoration } from 'react-router';
 import { Header } from './Header';
+import { Facebook, Linkedin, Instagram } from 'lucide-react';
+import { SOCIAL_LINKS } from '../../lib/constants';
+
+const Tiktok = (props: any) => (
+  <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-music-2">
+    <circle cx="8" cy="18" r="4"/>
+    <path d="M12 18V2l7 4"/>
+  </svg>
+);
 
 export function Layout() {
   return (
@@ -19,6 +28,24 @@ export function Layout() {
               <p className="text-gray-500 text-sm leading-relaxed font-normal">
                 La plateforme de référence pour la formation digitale et l'excellence académique au Sénégal.
               </p>
+              <div className="flex gap-4 pt-4">
+                {[
+                  { Icon: Facebook, url: SOCIAL_LINKS.facebook },
+                  { Icon: Linkedin, url: SOCIAL_LINKS.linkedin },
+                  { Icon: Instagram, url: SOCIAL_LINKS.instagram },
+                  { Icon: Tiktok, url: SOCIAL_LINKS.tiktok }
+                ].map(({ Icon, url }, i) => (
+                  <a 
+                    key={i} 
+                    href={url} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="text-gray-500 hover:text-indigo-400 transition-colors"
+                  >
+                    <Icon className="w-5 h-5" />
+                  </a>
+                ))}
+              </div>
             </div>
             
             <div className="space-y-6">

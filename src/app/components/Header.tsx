@@ -3,6 +3,7 @@ import { Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from './ui/button';
+import { SOCIAL_LINKS } from '../../lib/constants';
 
 export function Header() {
   const location = useLocation();
@@ -165,10 +166,21 @@ export function Header() {
             transition={{ delay: 0.8 }}
             className="flex justify-center space-x-8 text-gray-500 pb-4"
           >
-            {['LinkedIn', 'TikTok', 'Instagram'].map(social => (
-              <span key={social} className="text-[10px] font-black uppercase tracking-widest hover:text-white cursor-pointer transition-colors">
-                {social}
-              </span>
+            {[
+              { name: 'Facebook', url: SOCIAL_LINKS.facebook },
+              { name: 'LinkedIn', url: SOCIAL_LINKS.linkedin },
+              { name: 'TikTok', url: SOCIAL_LINKS.tiktok },
+              { name: 'Instagram', url: SOCIAL_LINKS.instagram }
+            ].map(social => (
+              <a 
+                key={social.name} 
+                href={social.url} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-[10px] font-black uppercase tracking-widest hover:text-white transition-colors"
+              >
+                {social.name}
+              </a>
             ))}
           </motion.div>
 
