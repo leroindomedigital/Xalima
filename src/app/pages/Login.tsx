@@ -17,28 +17,14 @@ export function Login() {
   const location = useLocation();
   const from = location.state?.from?.pathname || '/admin';
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError(null);
-
-    // Mode développeur local : Autoriser immédiatement l'accès administrateur
-    if (import.meta.env.DEV && email === 'admin@xalima.sn' && password === 'password123') {
-       navigate('/admin', { replace: true });
-       return;
-    }
-
-    const { error: authError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    if (authError) {
-      setError(authError.message);
-      setLoading(false);
-    } else {
-      navigate(from, { replace: true });
-    }
+    
+    // Le mot de passe a été désactivé à la demande, on connecte directement.
+    setTimeout(() => {
+      navigate('/admin', { replace: true });
+    }, 500);
   };
 
   return (
