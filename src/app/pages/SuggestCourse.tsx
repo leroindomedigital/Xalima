@@ -8,24 +8,47 @@ export default function SuggestCourse() {
   const [formData, setFormData] = useState({ name: '', email: '', title: '', reason: '' });
   const [isSent, setIsSent] = useState(false);
 
+  const [isSending, setIsSending] = useState(false);
+  const [error, setError] = useState('');
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const subject = encodeURIComponent(`[Suggestion Cours] ${formData.title}`);
-    const body = encodeURIComponent(
-      `Bonjour Xalima,\n\n` +
-      `Nom : ${formData.name}\n` +
-      `Email : ${formData.email}\n\n` +
-      `Cours suggéré : ${formData.title}\n\n` +
-      `Pourquoi ce cours est important :\n${formData.reason}\n\n` +
-      `---\nEnvoyé depuis xalima.vercel.app`
-    );
-    window.location.href = `mailto:xalimacour@gmail.com?subject=${subject}&body=${body}`;
-    setIsSent(true);
-    setTimeout(() => setIsSent(false), 5000);
+    setIsSending(true);
+    setError('');
+
+    try {
+      const response = await fetch("https://formsubmit.co/ajax/xalimacour@gmail.com", {
+        method: "POST",
+        headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+            _subject: `[Suggestion Cours] ${formData.title}`,
+            Nom: formData.name,
+            Email: formData.email,
+            Titre_Suggéré: formData.title,
+            Raison: formData.reason,
+            _template: "table"
+        })
+      });
+
+      if (response.ok) {
+        setIsSent(true);
+        setFormData({ name: '', email: '', title: '', reason: '' });
+        setTimeout(() => setIsSent(false), 5000);
+      } else {
+        throw new Error('Erreur lors de l\'envoi');
+      }
+    } catch (err) {
+      setError('Une erreur est survenue lors de l\'envoi de votre message. Veuillez réessayer.');
+    } finally {
+      setIsSending(false);
+    }
   };
 
   return (
@@ -136,16 +159,32 @@ export default function SuggestCourse() {
                     className="flex items-center gap-3 p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl text-emerald-400 text-sm font-bold"
                   >
                     <CheckCircle2 className="w-5 h-5 shrink-0" />
-                    <span>Votre client mail s'est ouvert ! Envoyez vers xalimacour@gmail.com.</span>
+                    <span>Suggestion envoyée avec succès à l'équipe Xalima !</span>
+                  </motion.div>
+                )}
+                {error && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    className="flex items-center gap-3 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-500 text-sm font-bold"
+                  >
+                    <span>{error}</span>
                   </motion.div>
                 )}
               </AnimatePresence>
 
               <Button 
                 type="submit" 
-                className="w-full h-16 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-lg uppercase tracking-widest rounded-xl transition-all active:scale-95 flex items-center justify-center gap-3"
+                disabled={isSending}
+                className="w-full h-16 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-lg uppercase tracking-widest rounded-xl transition-all active:scale-95 flex items-center justify-center gap-3 disabled:opacity-50"
               >
-                <Send className="h-5 w-5" /> ENVOYER
+                {isSending ? (
+                  <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                ) : (
+                  <Send className="h-5 w-5" />
+                )}
+                {isSending ? 'ENVOI EN COURS...' : 'ENVOYER'}
               </Button>
 
               <p className="text-center text-[10px] text-gray-600 font-bold uppercase tracking-widest">

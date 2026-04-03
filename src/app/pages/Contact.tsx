@@ -21,14 +21,42 @@ export function Contact() {
     message: '',
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSending, setIsSending] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitted(true);
-    setTimeout(() => {
-      setIsSubmitted(false);
-      setFormData({ name: '', email: '', message: '' });
-    }, 3000);
+    setIsSending(true);
+
+    try {
+      const response = await fetch("https://formsubmit.co/ajax/xalimacour@gmail.com", {
+        method: "POST",
+        headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+            _subject: `[Nouveau Contact Xalima] De ${formData.name}`,
+            Nom: formData.name,
+            Email: formData.email,
+            Message: formData.message,
+            _template: "table"
+        })
+      });
+
+      if (response.ok) {
+        setIsSubmitted(true);
+        setTimeout(() => {
+          setIsSubmitted(false);
+          setFormData({ name: '', email: '', message: '' });
+        }, 5000);
+      } else {
+        throw new Error('Erreur');
+      }
+    } catch (err) {
+      alert("Une erreur de connexion est survenue. Veuillez réessayer.");
+    } finally {
+      setIsSending(false);
+    }
   };
 
   return (
@@ -174,10 +202,20 @@ export function Contact() {
 
                     <Button 
                       type="submit"
-                      className="w-full h-16 bg-indigo-600 text-white hover:bg-indigo-700 font-black text-lg uppercase tracking-widest rounded-xl shadow-lg transition-all active:scale-95 flex items-center justify-center space-x-3"
+                      disabled={isSending}
+                      className="w-full h-16 bg-indigo-600 text-white hover:bg-indigo-700 font-black text-lg uppercase tracking-widest rounded-xl shadow-lg transition-all active:scale-95 flex items-center justify-center space-x-3 disabled:opacity-50"
                     >
-                      <span>ENVOYER</span>
-                      <Send className="w-5 h-5" />
+                      {isSending ? (
+                        <>
+                          <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                          <span>ENVOI...</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>ENVOYER</span>
+                          <Send className="w-5 h-5" />
+                        </>
+                      )}
                     </Button>
                   </form>
                 </motion.div>
