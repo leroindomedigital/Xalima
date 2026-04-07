@@ -390,6 +390,13 @@ export function Formation() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
   const [selectedFormation, setSelectedFormation] = useState<any>(null);
+  const [selectedFormationForSyllabus, setSelectedFormationForSyllabus] = useState<any>(null);
+  const [isSyllabusModalOpen, setIsSyllabusModalOpen] = useState(false);
+  
+  const handleOpenSyllabus = (formation: any) => {
+    setSelectedFormationForSyllabus(formation);
+    setIsSyllabusModalOpen(true);
+  };
   
   // Pagination state: tracks current page for each category title
   const [pages, setPages] = useState<Record<string, number>>({});
@@ -574,12 +581,21 @@ export function Formation() {
                           <div className="text-base font-black text-white tracking-tight">
                             {formation.price}
                           </div>
+                          <div className="flex gap-2 flex-col sm:flex-row">
                             <Button 
-                              className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl h-9 px-4 font-bold text-[9px] uppercase tracking-widest transition-all active:scale-95"
+                              variant="ghost"
+                              className="bg-indigo-600/10 hover:bg-indigo-600/20 text-indigo-400 rounded-xl h-9 px-4 font-bold text-[9px] uppercase tracking-widest transition-all active:scale-95 flex-grow"
+                              onClick={() => handleOpenSyllabus(formation)}
+                            >
+                              VOIR PROGRAMME
+                            </Button>
+                            <Button 
+                              className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl h-9 px-4 font-bold text-[9px] uppercase tracking-widest transition-all active:scale-95 flex-grow"
                               onClick={() => handleStartRegistration()}
                             >
-                            S'INSCRIRE
-                          </Button>
+                              S'INSCRIRE
+                            </Button>
+                          </div>
                         </CardFooter>
                       </Card>
                     </motion.div>
@@ -789,6 +805,104 @@ export function Formation() {
                     </Button>
                   </div>
                 </form>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Syllabus & PDF Viewer Modal */}
+      <AnimatePresence>
+        {isSyllabusModalOpen && selectedFormationForSyllabus && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-black/90 backdrop-blur-md"
+              onClick={() => setIsSyllabusModalOpen(false)}
+            />
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              className="relative w-full max-w-6xl bg-[#0c1222] border border-white/10 rounded-[3rem] shadow-2xl overflow-hidden h-[90vh] flex flex-col"
+            >
+              {/* Modal Header */}
+              <div className="p-8 sm:p-10 border-b border-white/10 flex items-center justify-between bg-white/5 backdrop-blur-xl">
+                <div className="flex items-center gap-6">
+                  <div className="w-14 h-14 rounded-2xl bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-600/20">
+                    <BookOpen className="w-8 h-8 text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl sm:text-3xl font-black uppercase tracking-tight text-white">Programme : <span className="text-indigo-400">{selectedFormationForSyllabus.title}</span></h2>
+                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-[0.3em] font-mono">{selectedFormationForSyllabus.level} • {selectedFormationForSyllabus.duration}</p>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => setIsSyllabusModalOpen(false)}
+                  className="w-12 h-12 rounded-xl hover:bg-white/5 flex items-center justify-center transition-colors border border-transparent hover:border-white/10 group"
+                >
+                  <X className="w-6 h-6 text-gray-500 group-hover:text-white" />
+                </button>
+              </div>
+
+              {/* Modal Content Scrollable Area */}
+              <div className="flex-grow overflow-y-auto p-8 sm:p-12 scrollbar-hide">
+                <div className="grid lg:grid-cols-2 gap-12 h-full">
+                  
+                  {/* Left: Syllabus Text */}
+                  <div className="space-y-8">
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-8 bg-indigo-500 rounded-full" />
+                      <h3 className="text-xl font-black uppercase tracking-tight">Détails du <span className="text-indigo-500">Syllabus</span></h3>
+                    </div>
+                    
+                    {selectedFormationForSyllabus.syllabus ? (
+                      <div className="bg-white/5 border border-white/10 p-8 rounded-3xl text-gray-300 leading-relaxed space-y-4 whitespace-pre-wrap font-normal text-sm sm:text-base selection:bg-indigo-500/30">
+                        {selectedFormationForSyllabus.syllabus}
+                      </div>
+                    ) : (
+                      <div className="p-12 text-center bg-white/5 rounded-3xl border border-dashed border-white/10">
+                         <Star className="w-12 h-12 text-gray-600 mx-auto mb-4 animate-pulse" />
+                         <p className="text-gray-500 italic">Le syllabus détaillé sera bientôt disponible pour cette formation.</p>
+                      </div>
+                    )}
+
+                    <div className="pt-8">
+                       <Button 
+                          className="w-full h-16 bg-white text-indigo-600 hover:bg-indigo-50 rounded-2xl font-black uppercase tracking-widest text-sm shadow-xl active:scale-95 transition-all"
+                          onClick={() => { setIsSyllabusModalOpen(false); handleStartRegistration(); }}
+                       >
+                          Démarrer l'inscription maintenant
+                       </Button>
+                    </div>
+                  </div>
+
+                  {/* Right: PDF Viewer or Placeholder */}
+                  <div className="space-y-8 h-full flex flex-col">
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-8 bg-rose-500 rounded-full" />
+                      <h3 className="text-xl font-black uppercase tracking-tight">Document <span className="text-rose-500">Officiel (PDF)</span></h3>
+                    </div>
+
+                    {selectedFormationForSyllabus.pdf_url ? (
+                      <div className="flex-grow bg-[#050816] rounded-3xl border border-white/10 overflow-hidden relative min-h-[400px]">
+                         <iframe 
+                            src={selectedFormationForSyllabus.pdf_url.includes('google.com') ? selectedFormationForSyllabus.pdf_url : `https://docs.google.com/viewer?url=${encodeURIComponent(selectedFormationForSyllabus.pdf_url)}&embedded=true`}
+                            className="w-full h-full border-none"
+                            title="Aperçu PDF"
+                         />
+                      </div>
+                    ) : (
+                      <div className="flex-grow bg-[#050816]/50 rounded-3xl border border-dashed border-white/10 flex flex-col items-center justify-center p-12 text-center min-h-[400px]">
+                         <Smartphone className="w-16 h-16 text-gray-700 mb-6" />
+                         <h4 className="text-white font-bold mb-2">Lecture en direct bientôt disponible</h4>
+                         <p className="text-gray-500 text-sm max-w-xs">Consultez le syllabus à gauche pour les détails du programme.</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
             </motion.div>
           </div>

@@ -22,6 +22,7 @@ export function AdminDashboard() {
   const [isAddingPDF, setIsAddingPDF] = useState(false);
   const [isAddingUnivCourse, setIsAddingUnivCourse] = useState(false);
   const [isAddingKB, setIsAddingKB] = useState(false);
+  const [isAddingFormation, setIsAddingFormation] = useState(false);
   
   const [dbRegistrations, setDbRegistrations] = useState<any[]>([]);
   const [dbUnivCourses, setDbUnivCourses] = useState<any[]>([]);
@@ -33,6 +34,10 @@ export function AdminDashboard() {
 
   const [newUnivCourse, setNewUnivCourse] = useState({
     title: '', faculty: 'Mathématiques', type: 'video', url: '', duration: '', pages: ''
+  });
+
+  const [newFormation, setNewFormation] = useState({
+    title: '', description: '', price: '', level: 'Formation', icon_name: 'BookOpen', syllabus: '', pdf_url: ''
   });
 
   useEffect(() => {
@@ -98,6 +103,36 @@ export function AdminDashboard() {
       setNewUnivCourse({ title: '', faculty: 'Mathématiques', type: 'video', url: '', duration: '', pages: '' });
       fetchData();
     }
+  };
+
+  const handleSaveFormation = async () => {
+    const { error } = await supabase.from('formations').insert([
+      {
+        title: newFormation.title,
+        description: newFormation.description,
+        price: newFormation.price,
+        level: newFormation.level,
+        icon_name: newFormation.icon_name,
+        syllabus: newFormation.syllabus,
+        pdf_url: newFormation.pdf_url,
+        image: `/images/formations/formation_${Math.floor(Math.random() * 5) + 1}.jpg`
+      }
+    ]);
+
+    if (error) {
+      alert('Erreur lors de l\'ajout : ' + error.message);
+    } else {
+      setIsAddingFormation(false);
+      setNewFormation({ title: '', description: '', price: '', level: 'Formation', icon_name: 'BookOpen', syllabus: '', pdf_url: '' });
+      fetchData();
+    }
+  };
+
+  const deleteFormation = async (id: number) => {
+    if (!confirm('Supprimer cette formation ?')) return;
+    const { error } = await supabase.from('formations').delete().eq('id', id);
+    if (error) alert(error.message);
+    else fetchData();
   };
 
   const confirmPayment = async (regId: string) => {
@@ -340,7 +375,7 @@ export function AdminDashboard() {
                          <Filter className="w-4 h-4" />
                          Filtrer
                       </Button>
-                      <Button className="bg-indigo-600 hover:bg-indigo-700 rounded-xl px-6 h-12 flex gap-2">
+                      <Button className="bg-indigo-600 hover:bg-indigo-700 rounded-xl px-6 h-12 flex gap-2" onClick={() => setIsAddingFormation(true)}>
                          <Plus className="w-4 h-4" />
                          Ajouter
                       </Button>
@@ -381,7 +416,7 @@ export function AdminDashboard() {
                                   </div>
                                </td>
                                <td className="px-8 py-6 text-right">
-                                  <button className="text-gray-500 hover:text-white"><MoreVertical className="w-5 h-5" /></button>
+                                  <button className="text-gray-500 hover:text-red-400" onClick={() => deleteFormation(course.id)}><X className="w-5 h-5" /></button>
                                </td>
                             </tr>
                          ))}
@@ -390,16 +425,12 @@ export function AdminDashboard() {
                 </div>
              </div>
 
-                {/* Simulated PDF Upload Area */}
-                <div className="p-12 border-2 border-dashed border-white/10 rounded-[3rem] text-center space-y-4 hover:border-indigo-500/20 transition-all">
+                <div className="p-12 border-2 border-dashed border-white/10 rounded-[3rem] text-center space-y-4 hover:border-indigo-500/20 transition-all cursor-pointer" onClick={() => setIsAddingFormation(true)}>
                    <div className="w-20 h-20 bg-white/5 rounded-3xl flex items-center justify-center mx-auto mb-4">
-                      <Download className="w-10 h-10 text-gray-500" />
+                      <Plus className="w-10 h-10 text-indigo-500" />
                    </div>
-                   <h4 className="text-xl font-black uppercase tracking-tight text-white">Déposez vos PDFs ici</h4>
-                   <p className="text-gray-400 max-w-sm mx-auto text-sm">Sélectionner des fichiers pour les associer automatiquement à vos programmes de formation.</p>
-                   <Button className="bg-white/5 border border-white/10 hover:bg-white/10 text-white px-8 rounded-xl h-12 uppercase font-black tracking-widest text-xs">
-                       Parcourir les fichiers
-                   </Button>
+                   <h4 className="text-xl font-black uppercase tracking-tight text-white">Nouvelle Formation</h4>
+                   <p className="text-gray-400 max-w-sm mx-auto text-sm">Cliquez ici pour créer un nouveau programme certifiant avec syllabus et PDF.</p>
                 </div>
               </motion.div>
             )}
@@ -830,6 +861,125 @@ export function AdminDashboard() {
                            disabled={!newUnivCourse.title || !newUnivCourse.url}
                         >
                            Publier le Cours
+                        </Button>
+                     </div>
+                  </div>
+               </motion.div>
+            </div>
+         )}
+      </AnimatePresence>
+
+      {/* Add Formation Modal */}
+      <AnimatePresence>
+         {isAddingFormation && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center px-4">
+               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={() => setIsAddingFormation(false)} />
+               <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="relative w-full max-w-3xl bg-[#020617] border border-white/10 rounded-[3rem] overflow-hidden p-12 max-h-[90vh] overflow-y-auto">
+                  <div className="flex justify-between items-center mb-10">
+                     <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-2xl bg-indigo-600 flex items-center justify-center">
+                           <Plus className="w-6 h-6 text-white" />
+                        </div>
+                        <div>
+                           <h3 className="text-2xl font-black uppercase tracking-tight text-white font-sans">Nouvelle <span className="text-indigo-500">Formation</span></h3>
+                           <p className="text-gray-400 text-xs font-bold uppercase tracking-widest">Catalogue Certifiant</p>
+                        </div>
+                     </div>
+                     <button onClick={() => setIsAddingFormation(false)}>
+                        <X className="w-6 h-6 text-gray-400 hover:text-white" />
+                     </button>
+                  </div>
+
+                  <div className="space-y-8">
+                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                        <div className="space-y-3">
+                           <label className="text-[10px] font-black uppercase tracking-widest text-indigo-400">Titre de la Formation</label>
+                           <Input 
+                              value={newFormation.title}
+                              onChange={(e) => setNewFormation({...newFormation, title: e.target.value})}
+                              className="bg-white/5 border-white/10 rounded-2xl h-14" 
+                              placeholder="Ex: Marketing Digital 360" 
+                           />
+                        </div>
+                        <div className="space-y-3">
+                           <label className="text-[10px] font-black uppercase tracking-widest text-indigo-400">Prix (FCFA)</label>
+                           <Input 
+                              value={newFormation.price}
+                              onChange={(e) => setNewFormation({...newFormation, price: e.target.value})}
+                              className="bg-white/5 border-white/10 rounded-2xl h-14" 
+                              placeholder="Ex: 45 000" 
+                           />
+                        </div>
+                     </div>
+
+                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                        <div className="space-y-3">
+                           <label className="text-[10px] font-black uppercase tracking-widest text-indigo-400">Niveau / Type</label>
+                           <select 
+                              value={newFormation.level}
+                              onChange={(e) => setNewFormation({...newFormation, level: e.target.value})}
+                              className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl px-4 text-sm text-white focus:border-indigo-500 focus:outline-none"
+                           >
+                              <option value="Formation">Formation Classique</option>
+                              <option value="Spécialisation">Spécialisation</option>
+                              <option value="Master">Programme Master</option>
+                           </select>
+                        </div>
+                        <div className="space-y-3">
+                           <label className="text-[10px] font-black uppercase tracking-widest text-indigo-400">Icône (Lucide Name)</label>
+                           <select 
+                              value={newFormation.icon_name}
+                              onChange={(e) => setNewFormation({...newFormation, icon_name: e.target.value})}
+                              className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl px-4 text-sm text-white focus:border-indigo-500 focus:outline-none"
+                           >
+                              <option value="TrendingUp">Marketing / Graph</option>
+                              <option value="Code">Développement / Code</option>
+                              <option value="Briefcase">Business / Management</option>
+                              <option value="Palette">Design / Art</option>
+                              <option value="BookOpen">Éducation / Autre</option>
+                           </select>
+                        </div>
+                     </div>
+
+                     <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-indigo-400">Description Simple</label>
+                        <Input 
+                           value={newFormation.description}
+                           onChange={(e) => setNewFormation({...newFormation, description: e.target.value})}
+                           className="bg-white/5 border-white/10 rounded-2xl h-14" 
+                           placeholder="Résumé court de 2 lignes..." 
+                        />
+                     </div>
+
+                     <div className="space-y-6 p-8 bg-indigo-600/5 border border-indigo-500/10 rounded-[2rem]">
+                        <div className="space-y-3">
+                           <label className="text-[10px] font-black uppercase tracking-widest text-indigo-400">Syllabus Détaillé (Le contenu du PDF)</label>
+                           <textarea 
+                              value={newFormation.syllabus}
+                              onChange={(e) => setNewFormation({...newFormation, syllabus: e.target.value})}
+                              className="w-full min-h-[150px] bg-white/5 border border-white/10 rounded-2xl p-6 text-sm text-white focus:border-indigo-500 focus:outline-none font-medium leading-relaxed"
+                              placeholder="Copiez ici le texte extrait de votre PDF..."
+                           />
+                        </div>
+                        <div className="space-y-3">
+                           <label className="text-[10px] font-black uppercase tracking-widest text-indigo-400">URL du PDF (Lecture directe)</label>
+                           <Input 
+                              value={newFormation.pdf_url}
+                              onChange={(e) => setNewFormation({...newFormation, pdf_url: e.target.value})}
+                              className="bg-white/5 border-white/10 rounded-2xl h-14" 
+                              placeholder="https://..." 
+                           />
+                        </div>
+                     </div>
+
+                     <div className="flex gap-4 pt-6">
+                        <Button variant="outline" className="flex-grow h-16 rounded-2xl border-white/10 text-white font-black uppercase tracking-widest" onClick={() => setIsAddingFormation(false)}>Annuler</Button>
+                        <Button 
+                           className="flex-grow h-16 rounded-2xl bg-indigo-600 text-white font-black uppercase tracking-widest shadow-xl shadow-indigo-600/20" 
+                           onClick={handleSaveFormation}
+                           disabled={!newFormation.title || !newFormation.description}
+                        >
+                           Publier la Formation
                         </Button>
                      </div>
                   </div>
