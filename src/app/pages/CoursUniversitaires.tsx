@@ -582,108 +582,60 @@ function VideoPlayerModal({ course, initialProgress, onClose }: { course: Course
 }
 
 // -------------------------------------------------------------
-// Interactive PDF Reader Modal
+// Interactive PDF Reader Modal (Enhanced for Real Content)
 // -------------------------------------------------------------
-function PdfReaderModal({ course, initialProgress, onClose }: { course: Course, initialProgress: number, onClose: (progress: number) => void }) {
-  const totalPages = course.pages || 45;
-  const initialPage = Math.max(1, Math.floor((initialProgress / 100) * totalPages));
-  const [currentPage, setCurrentPage] = useState(initialPage);
-  const [zoom, setZoom] = useState(1);
-
-  const calculateProgress = (page: number) => Math.round((page / totalPages) * 100);
-
+function PdfReaderModal({ course, onClose }: { course: Course, initialProgress: number, onClose: (progress: number) => void }) {
   return (
      <div className="fixed inset-0 z-[100] flex items-center justify-center px-4 font-sans py-8">
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-black/95 backdrop-blur-xl" onClick={() => onClose(calculateProgress(currentPage))} />
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-black/95 backdrop-blur-xl" onClick={() => onClose(0)} />
         
         <motion.div 
            initial={{ scale: 0.95, opacity: 0, y: 20 }} 
            animate={{ scale: 1, opacity: 1, y: 0 }} 
            exit={{ scale: 0.95, opacity: 0, y: 20 }} 
-           className="relative w-full max-w-4xl h-full flex flex-col bg-[#0f172a] border border-white/10 rounded-2xl overflow-hidden shadow-2xl"
+           className="relative w-full max-w-6xl h-full flex flex-col bg-[#0f172a] border border-white/10 rounded-[3rem] overflow-hidden shadow-2xl"
         >
            {/* Top Toolbar */}
-           <div className="h-16 flex-none bg-[#020617] border-b border-white/10 flex items-center justify-between px-6">
+           <div className="h-20 flex-none bg-[#020617] border-b border-white/10 flex items-center justify-between px-8">
               <div className="flex items-center gap-4">
-                 <div className="p-2 bg-blue-500/20 rounded-lg"><FileText className="w-5 h-5 text-blue-400" /></div>
+                 <div className="w-10 h-10 bg-blue-600/20 rounded-xl flex items-center justify-center border border-blue-500/20">
+                    <FileText className="w-6 h-6 text-blue-400" />
+                 </div>
                  <div>
-                    <h4 className="text-xs font-black uppercase tracking-widest text-white truncate max-w-[200px] sm:max-w-md">{course.title}.pdf</h4>
-                    <p className="text-[9px] text-gray-500 uppercase tracking-widest">{course.filiere}</p>
+                    <h4 className="text-sm font-black uppercase tracking-tight text-white truncate max-w-[200px] sm:max-w-md">{course.title}</h4>
+                    <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">{course.univ} · {course.filiere}</p>
                  </div>
               </div>
 
-              <div className="flex items-center gap-2 sm:gap-4">
-                 <div className="hidden sm:flex items-center gap-1 bg-white/5 rounded-lg p-1 border border-white/5">
-                    <button onClick={() => setZoom(z => Math.max(0.5, z - 0.2))} className="p-2 hover:bg-white/10 rounded-md transition-colors"><ZoomOut className="w-4 h-4" /></button>
-                    <span className="text-[10px] font-bold w-12 text-center text-gray-400">{Math.round(zoom * 100)}%</span>
-                    <button onClick={() => setZoom(z => Math.min(2, z + 0.2))} className="p-2 hover:bg-white/10 rounded-md transition-colors"><ZoomIn className="w-4 h-4" /></button>
-                 </div>
-                 
+              <div className="flex items-center gap-4">
                  <Button 
-                   className="h-9 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-[10px] font-black uppercase px-4 hidden sm:flex"
-                   onClick={() => {
-                     if (course.url) {
-                       window.open(course.url, '_blank');
-                     } else {
-                       alert('PDF non disponible pour ce cours.');
-                     }
-                   }}
+                   className="h-11 bg-white hover:bg-gray-100 text-[#020617] rounded-xl text-[10px] font-black uppercase px-6 hidden sm:flex shadow-lg"
+                   onClick={() => course.url && window.open(course.url, '_blank')}
                  >
-                    <Download className="w-3.5 h-3.5 mr-2" /> Télécharger
+                    <Maximize className="w-4 h-4 mr-2" /> Plein Écran
                  </Button>
                  
-                 <button onClick={() => onClose(calculateProgress(currentPage))} className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-white/10 transition-colors ml-2">
-                    <X className="w-5 h-5" />
+                 <button onClick={() => onClose(0)} className="w-11 h-11 flex items-center justify-center rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors ml-2 group">
+                    <X className="w-5 h-5 text-gray-400 group-hover:text-white" />
                  </button>
               </div>
            </div>
 
-           {/* PDF Document Area - Real Iframe */} 
-           <div className="flex-1 bg-[#0f172a] p-4 sm:p-8 flex justify-center overflow-hidden">
+           {/* PDF Document Area - Native Browser Viewer */} 
+           <div className="flex-1 bg-[#050816] relative overflow-hidden group">
               {course.url ? (
-                 <div className="w-full h-full bg-[#050816] rounded-xl border border-white/10 overflow-hidden relative shadow-2xl">
-                    <iframe 
-                       src={course.url.includes('google.com') ? course.url : `https://docs.google.com/viewer?url=${encodeURIComponent(course.url)}&embedded=true`}
-                       className="w-full h-full border-none"
-                       title={`Lecture : ${course.title}`}
-                    />
-                 </div>
+                 <iframe 
+                    src={`${course.url}#toolbar=1&navpanes=1`}
+                    className="w-full h-full border-none bg-transparent"
+                    title={`Lecture : ${course.title}`}
+                 />
               ) : (
-                <div className="flex-grow bg-[#050816]/50 rounded-3xl border border-dashed border-white/10 flex flex-col items-center justify-center p-12 text-center min-h-[400px] w-full">
-                   <FileText className="w-16 h-16 text-gray-700 mb-6" />
-                   <h4 className="text-white font-bold mb-2">Fichier non disponible</h4>
-                   <p className="text-gray-500 text-sm max-w-xs">L'administrateur n'a pas encore ajouté le lien vers ce support PDF.</p>
+                <div className="absolute inset-0 flex flex-col items-center justify-center p-12 text-center bg-[#050816]">
+                   <FileText className="w-16 h-16 text-gray-800 mb-6 animate-pulse" />
+                   <h4 className="text-white font-black uppercase text-xl mb-3">Fichier indisponible</h4>
+                   <p className="text-gray-500 text-sm max-w-sm uppercase tracking-widest font-bold">L'URL du document est manquante dans la base de données.</p>
                 </div>
               )}
-           </div>
-
-           {/* Bottom Pagination Bar */}
-           <div className="h-16 flex-none bg-[#020617] border-t border-white/10 flex items-center justify-center gap-8 px-6">
-              <button 
-                 onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                 disabled={currentPage === 1}
-                 className="p-2 hover:bg-white/10 rounded-full transition-colors disabled:opacity-30"
-              >
-                 <ChevronLeft className="w-5 h-5" />
-              </button>
-              
-              <div className="bg-white/5 border border-white/10 px-4 py-2 rounded-lg flex items-center gap-2 text-xs font-bold text-gray-400 tracking-widest uppercase">
-                 <input 
-                    type="number" 
-                    value={currentPage}
-                    onChange={(e) => setCurrentPage(Math.min(totalPages, Math.max(1, parseInt(e.target.value) || 1)))}
-                    className="w-10 bg-transparent text-white text-center outline-none" 
-                 />
-                 / <span>{totalPages}</span>
-              </div>
-
-              <button 
-                 onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                 disabled={currentPage === totalPages}
-                 className="p-2 hover:bg-white/10 rounded-full transition-colors disabled:opacity-30"
-              >
-                 <ChevronRight className="w-5 h-5" />
-              </button>
            </div>
         </motion.div>
      </div>
