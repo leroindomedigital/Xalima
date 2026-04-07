@@ -793,12 +793,20 @@ export function Formation() {
                     </div>
                     <div className="space-y-2">
                        <Label className="text-[10px] font-bold uppercase tracking-widest text-gray-500">Niveau d'étude</Label>
-                       <select name="study_level" translate="no" required className="w-full h-12 bg-[#0c1222] border border-white/10 rounded-xl px-4 text-sm text-gray-300 focus:border-indigo-500 focus:outline-none cursor-pointer">
-                          <option translate="no" value="">Sélectionner</option>
-                          <option translate="no" value="bac">BAC</option>
-                          <option translate="no" value="licence">LICENCE</option>
-                          <option translate="no" value="master">MASTER</option>
-                          <option translate="no" value="autres">AUTRES</option>
+                       <select 
+                         name="study_level" 
+                         required 
+                         className="w-full h-12 bg-[#1a2333] border border-white/10 rounded-xl px-4 text-sm text-white focus:border-indigo-500 focus:outline-none cursor-pointer appearance-none"
+                         style={{ colorScheme: 'dark' }}
+                       >
+                          <option value="" className="bg-[#1a2333] text-white">Sélectionner</option>
+                          <option value="bac" className="bg-[#1a2333] text-white">BAC</option>
+                          <option value="licence 1" className="bg-[#1a2333] text-white">Licence 1</option>
+                          <option value="licence 2" className="bg-[#1a2333] text-white">Licence 2</option>
+                          <option value="licence 3" className="bg-[#1a2333] text-white">Licence 3</option>
+                          <option value="master 1" className="bg-[#1a2333] text-white">Master 1</option>
+                          <option value="master 2" className="bg-[#1a2333] text-white">Master 2</option>
+                          <option value="professionnel" className="bg-[#1a2333] text-white">Professionnel</option>
                        </select>
                     </div>
                   </div>

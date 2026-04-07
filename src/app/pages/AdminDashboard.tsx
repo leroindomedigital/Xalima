@@ -801,6 +801,7 @@ export function AdminDashboard() {
                               value={newUnivCourse.type}
                               onChange={(e) => setNewUnivCourse({...newUnivCourse, type: e.target.value})}
                               className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl px-4 text-sm text-gray-300 focus:border-indigo-500 focus:outline-none"
+                              style={{ colorScheme: 'dark' }}
                            >
                               <option value="video">Vidéo (MP4 / YouTube)</option>
                               <option value="pdf">Document PDF</option>
@@ -812,6 +813,7 @@ export function AdminDashboard() {
                               value={newUnivCourse.faculty}
                               onChange={(e) => setNewUnivCourse({...newUnivCourse, faculty: e.target.value})}
                               className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl px-4 text-sm text-gray-300 focus:border-indigo-500 focus:outline-none"
+                              style={{ colorScheme: 'dark' }}
                            >
                               <option value="Mathématiques">Mathématiques</option>
                               <option value="Informatique">Informatique</option>
@@ -929,6 +931,7 @@ export function AdminDashboard() {
                               value={newFormation.level}
                               onChange={(e) => setNewFormation({...newFormation, level: e.target.value})}
                               className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl px-4 text-sm text-white focus:border-indigo-500 focus:outline-none"
+                              style={{ colorScheme: 'dark' }}
                            >
                               <option value="Formation">Formation Classique</option>
                               <option value="Spécialisation">Spécialisation</option>
@@ -941,6 +944,7 @@ export function AdminDashboard() {
                               value={newFormation.icon_name}
                               onChange={(e) => setNewFormation({...newFormation, icon_name: e.target.value})}
                               className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl px-4 text-sm text-white focus:border-indigo-500 focus:outline-none"
+                              style={{ colorScheme: 'dark' }}
                            >
                               <option value="TrendingUp">Marketing / Graph</option>
                               <option value="Code">Développement / Code</option>
