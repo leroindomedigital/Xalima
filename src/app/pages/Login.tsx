@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router';
-import { motion } from 'framer-motion';
-import { Lock, Mail, ArrowRight, ShieldCheck, GraduationCap, ChevronLeft } from 'lucide-react';
+import { supabase } from '../../lib/supabase';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Lock, Mail, ArrowRight, ShieldCheck, GraduationCap, ChevronLeft, AlertCircle } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -10,17 +11,33 @@ export function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = (location.state as any)?.from?.pathname || '/admin';
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError(null);
     
-    // Auth bypass for rapid management
-    setTimeout(() => {
-      navigate('/admin', { replace: true });
-    }, 800);
+    try {
+      const { error: authError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (authError) throw authError;
+
+      // Connexion réussie -> Redirection
+      navigate(from, { replace: true });
+    } catch (err: any) {
+      console.error("Login error:", err.message);
+      setError("Identifiants incorrects. Veuillez vérifier votre email et mot de passe.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -82,9 +99,23 @@ export function Login() {
                   <div className="h-1.5 w-12 bg-indigo-600 rounded-full mb-8 mx-auto md:mx-0" />
                </div>
 
-               <form onSubmit={handleLogin} className="space-y-8">
+               <form onSubmit={handleLogin} className="space-y-6">
+                  <AnimatePresence>
+                     {error && (
+                        <motion.div 
+                           initial={{ opacity: 0, y: -10 }}
+                           animate={{ opacity: 1, y: 0 }}
+                           exit={{ opacity: 0, y: -10 }}
+                           className="bg-rose-500/10 border border-rose-500/20 p-4 rounded-xl text-xs text-rose-400 font-bold flex gap-3 items-center backdrop-blur-md"
+                        >
+                           <AlertCircle className="w-4 h-4 shrink-0" />
+                           <span>{error}</span>
+                        </motion.div>
+                     )}
+                  </AnimatePresence>
+
                   <div className="space-y-3">
-                    <Label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-2">Console d'administration</Label>
+                    <Label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">Console d'administration</Label>
                     <div className="relative group/input">
                        <Mail className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 group-focus-within/input:text-indigo-500 transition-colors" />
                        <Input 
@@ -99,7 +130,7 @@ export function Login() {
                   </div>
 
                   <div className="space-y-3">
-                    <Label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-2">Clef d'accès</Label>
+                    <Label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">Clef d'accès</Label>
                     <div className="relative group/input">
                        <Lock className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 group-focus-within/input:text-indigo-500 transition-colors" />
                        <Input 
@@ -116,7 +147,7 @@ export function Login() {
                   <Button 
                     type="submit" 
                     disabled={loading}
-                    className="w-full h-16 bg-white hover:bg-white/90 text-[#020617] font-black uppercase tracking-[0.2em] text-xs rounded-2xl shadow-2xl active:scale-[0.98] transition-all group mt-4 overflow-hidden"
+                    className="w-full h-16 bg-white hover:bg-white/90 text-[#020617] font-black uppercase tracking-[0.2em] text-xs rounded-2xl shadow-2xl active:scale-[0.98] transition-all group mt-6 overflow-hidden"
                   >
                     {loading ? (
                       <div className="w-6 h-6 border-2 border-[#020617] border-t-transparent rounded-full animate-spin" />

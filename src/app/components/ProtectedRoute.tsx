@@ -12,8 +12,9 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
       </div>
     );
   }
-  // Bypass de sécurité pour accéder directement au dashboard sans Auth/Mot de passe
-  return <>{children}</>;
+  if (!session) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
 
   return <>{children}</>;
 }
