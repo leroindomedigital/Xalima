@@ -33,7 +33,7 @@ export function AdminDashboard() {
   const [newKB, setNewKB] = useState({ category: 'Général', keywords: '', content: '' });
 
   const [newUnivCourse, setNewUnivCourse] = useState({
-    title: '', faculty: 'Mathématiques', type: 'video', url: '', duration: '', pages: ''
+    title: '', faculty: 'Mathématiques', type: 'video', url: '', duration: '', pages: '', univ: 'UCAD', cat: 'sciences'
   });
 
   const [newFormation, setNewFormation] = useState({
@@ -91,6 +91,8 @@ export function AdminDashboard() {
         faculty: newUnivCourse.faculty,
         type: newUnivCourse.type,
         url: newUnivCourse.url,
+        univ: newUnivCourse.univ,
+        cat: newUnivCourse.cat,
         duration: newUnivCourse.type === 'video' ? (newUnivCourse.duration || 'N/A') : null,
         pages: newUnivCourse.type === 'pdf' ? (parseInt(newUnivCourse.pages) || 0) : null,
       }
@@ -100,7 +102,7 @@ export function AdminDashboard() {
       alert('Erreur lors de l\'ajout : ' + error.message);
     } else {
       setIsAddingUnivCourse(false);
-      setNewUnivCourse({ title: '', faculty: 'Mathématiques', type: 'video', url: '', duration: '', pages: '' });
+      setNewUnivCourse({ title: '', faculty: 'Mathématiques', type: 'video', url: '', duration: '', pages: '', univ: 'UCAD', cat: 'sciences' });
       fetchData();
     }
   };
