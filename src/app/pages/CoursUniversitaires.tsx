@@ -585,6 +585,8 @@ function VideoPlayerModal({ course, initialProgress, onClose }: { course: Course
 // Interactive PDF Reader Modal (Enhanced for Real Content)
 // -------------------------------------------------------------
 function PdfReaderModal({ course, onClose }: { course: Course, initialProgress: number, onClose: (progress: number) => void }) {
+  const [useFallback, setUseFallback] = useState(false);
+  
   return (
      <div className="fixed inset-0 z-[100] flex items-center justify-center px-4 font-sans py-8">
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-black/95 backdrop-blur-xl" onClick={() => onClose(0)} />
@@ -601,18 +603,28 @@ function PdfReaderModal({ course, onClose }: { course: Course, initialProgress: 
                  <div className="w-10 h-10 bg-blue-600/20 rounded-xl flex items-center justify-center border border-blue-500/20">
                     <FileText className="w-6 h-6 text-blue-400" />
                  </div>
-                 <div>
+                 <div className="hidden sm:block">
                     <h4 className="text-sm font-black uppercase tracking-tight text-white truncate max-w-[200px] sm:max-w-md">{course.title}</h4>
                     <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">{course.univ} · {course.filiere}</p>
                  </div>
               </div>
 
               <div className="flex items-center gap-4">
+                 <div className="flex flex-col items-end mr-4">
+                    <p className="text-[9px] text-indigo-400 font-black uppercase tracking-widest animate-pulse">Lecture Sécurisée</p>
+                    <button 
+                       onClick={() => setUseFallback(!useFallback)}
+                       className="text-[10px] text-gray-500 hover:text-white underline font-bold"
+                    >
+                       Problème d'affichage ? Cliquer ici
+                    </button>
+                 </div>
+                 
                  <Button 
                    className="h-11 bg-white hover:bg-gray-100 text-[#020617] rounded-xl text-[10px] font-black uppercase px-6 hidden sm:flex shadow-lg"
                    onClick={() => course.url && window.open(course.url, '_blank')}
                  >
-                    <Maximize className="w-4 h-4 mr-2" /> Plein Écran
+                    <Maximize className="w-4 h-4 mr-2" /> Ouvrir en Plein Écran
                  </Button>
                  
                  <button onClick={() => onClose(0)} className="w-11 h-11 flex items-center justify-center rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors ml-2 group">
@@ -621,14 +633,31 @@ function PdfReaderModal({ course, onClose }: { course: Course, initialProgress: 
               </div>
            </div>
 
-           {/* PDF Document Area - Native Browser Viewer */} 
+           {/* PDF Document Area - Double Layer Viewer */} 
            <div className="flex-1 bg-[#050816] relative overflow-hidden group">
               {course.url ? (
-                 <iframe 
-                    src={`${course.url}#toolbar=1&navpanes=1`}
-                    className="w-full h-full border-none bg-transparent"
-                    title={`Lecture : ${course.title}`}
-                 />
+                 <div className="w-full h-full relative">
+                    {/* Primary Native Viewer or Google Fallback */}
+                    <iframe 
+                       src={useFallback 
+                          ? `https://docs.google.com/viewer?url=${encodeURIComponent(course.url)}&embedded=true` 
+                          : `${course.url}#toolbar=1&navpanes=1`}
+                       className="w-full h-full border-none bg-transparent"
+                       title={`Lecture : ${course.title}`}
+                    />
+                    
+                    {/* Direct link as last resort if both fail visually for user */}
+                    <div className="absolute bottom-10 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                       <a 
+                          href={course.url} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="bg-indigo-600 px-8 py-4 rounded-2xl text-xs font-black uppercase tracking-widest text-white shadow-2xl flex items-center gap-3 border border-indigo-400/30"
+                       >
+                          <Download className="w-4 h-4" /> Si rien ne s'affiche, télécharger le cours
+                       </a>
+                    </div>
+                 </div>
               ) : (
                 <div className="absolute inset-0 flex flex-col items-center justify-center p-12 text-center bg-[#050816]">
                    <FileText className="w-16 h-16 text-gray-800 mb-6 animate-pulse" />
