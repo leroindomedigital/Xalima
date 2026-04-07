@@ -166,9 +166,9 @@ export function Register() {
                         </div>
                       </div>
                       <p className="text-gray-500 text-sm">
-                        {step === 1 && "Complétez vos informations pour démarrer votre parcours."}
-                        {step === 2 && "Choisissez votre mode de paiement pour valider l'inscription."}
-                        {step === 3 && "Veuillez effectuer le paiement et saisir votre ID de transaction."}
+                        {step === 1 && "Veuillez remplir vos informations pour débuter l'aventure Xalima."}
+                        {step === 2 && "Sélectionnez votre moyen de paiement sécurisé (Wave ou Orange Money)."}
+                        {step === 3 && "Effectuez le transfert, puis saisissez l'ID de transaction reçu par SMS."}
                       </p>
                     </div>
 
