@@ -100,6 +100,33 @@ export function AdminDashboard() {
     }
   };
 
+  const confirmPayment = async (regId: string) => {
+    const { error } = await supabase
+      .from('registrations')
+      .update({ status: 'Payé' })
+      .eq('id', regId);
+
+    if (error) {
+      alert('Erreur lors de la confirmation : ' + error.message);
+    } else {
+      fetchData();
+    }
+  };
+
+  const deleteRegistration = async (regId: string) => {
+    if (!confirm('Supprimer cette inscription ?')) return;
+    const { error } = await supabase
+      .from('registrations')
+      .delete()
+      .eq('id', regId);
+
+    if (error) {
+      alert('Erreur lors de la suppression : ' + error.message);
+    } else {
+      fetchData();
+    }
+  };
+
   const stats = [
     { label: "Inscriptions", value: dbRegistrations.length.toString(), icon: Users, color: "text-blue-400", trend: "+5%" },
     { label: "Cours Univ.", value: dbUnivCourses.length.toString(), icon: Film, color: "text-indigo-400", trend: "Stable" },
@@ -444,8 +471,103 @@ export function AdminDashboard() {
                  animate={{ opacity: 1, x: 0 }}
                  className="space-y-10"
                >
-                 {/* ... student table code ... */}
-               </motion.div>
+                 <div className="flex items-center justify-between">
+                    <h3 className="text-2xl font-black uppercase tracking-tight">Suivi des <span className="text-indigo-500">Inscriptions</span></h3>
+                    <Button variant="outline" className="border-white/10 rounded-xl px-6 h-12 flex gap-2" onClick={fetchData}>
+                       <Clock className="w-4 h-4" />
+                       Actualiser
+                    </Button>
+                 </div>
+
+                 <div className="bg-[#0c1222] border border-white/10 rounded-[2.5rem] overflow-hidden">
+                    <div className="overflow-x-auto">
+                       <table className="w-full text-left min-w-[1000px]">
+                       <thead>
+                          <tr className="border-b border-white/10">
+                             <th className="px-8 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Étudiant</th>
+                             <th className="px-8 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Formation / Module</th>
+                             <th className="px-8 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Paiement</th>
+                             <th className="px-8 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Transaction ID</th>
+                             <th className="px-8 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Statut</th>
+                             <th className="px-8 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Actions</th>
+                          </tr>
+                       </thead>
+                       <tbody className="divide-y divide-white/5">
+                          {dbRegistrations.length === 0 ? (
+                             <tr>
+                                <td colSpan={6} className="py-12 text-center text-gray-500 italic">Aucune inscription enregistrée.</td>
+                             </tr>
+                          ) : (
+                             dbRegistrations.map((reg) => (
+                                <tr key={reg.id} className="hover:bg-white/5 transition-colors group">
+                                   <td className="px-8 py-6">
+                                      <div className="flex items-center gap-3">
+                                         <div className="w-10 h-10 rounded-xl bg-indigo-600/10 flex items-center justify-center font-bold text-indigo-400 border border-indigo-500/20">
+                                            {reg.full_name?.charAt(0) || '?'}
+                                         </div>
+                                         <div>
+                                            <p className="font-bold text-white">{reg.full_name}</p>
+                                            <p className="text-[10px] text-gray-500">{reg.email}</p>
+                                         </div>
+                                      </div>
+                                   </td>
+                                   <td className="px-8 py-6 font-medium text-gray-300">
+                                      {reg.interest || 'Non spécifié'}
+                                      {reg.level && <p className="text-[10px] text-indigo-400 uppercase font-black tracking-widest mt-1">{reg.level}</p>}
+                                   </td>
+                                   <td className="px-8 py-6">
+                                      {reg.payment_method ? (
+                                         <Badge className={`border-none text-[10px] font-black uppercase tracking-widest ${
+                                            reg.payment_method === 'wave' ? 'bg-blue-500/10 text-blue-400' : 'bg-orange-500/10 text-orange-400'
+                                         }`}>
+                                            {reg.payment_method}
+                                         </Badge>
+                                      ) : (
+                                         <span className="text-gray-600 text-xs">N/A</span>
+                                      )}
+                                   </td>
+                                   <td className="px-8 py-6">
+                                      <code className="bg-white/5 px-3 py-1 rounded text-xs font-mono text-indigo-300">
+                                         {reg.transaction_id || '---'}
+                                      </code>
+                                   </td>
+                                   <td className="px-8 py-6">
+                                      <div className="flex items-center gap-2">
+                                         <div className={`w-2 h-2 rounded-full ${reg.status === 'Payé' ? 'bg-emerald-500' : 'bg-yellow-500'}`} />
+                                         <span className={`text-xs font-bold ${reg.status === 'Payé' ? 'text-emerald-400' : 'text-yellow-400'}`}>
+                                            {reg.status || 'En attente'}
+                                         </span>
+                                      </div>
+                                   </td>
+                                   <td className="px-8 py-6">
+                                      <div className="flex items-center gap-2">
+                                         {reg.status !== 'Payé' && (
+                                            <Button 
+                                               size="sm" 
+                                               className="bg-emerald-600 hover:bg-emerald-700 h-8 rounded-lg text-[9px] font-black uppercase tracking-widest px-3"
+                                               onClick={() => confirmPayment(reg.id)}
+                                            >
+                                               Valider
+                                            </Button>
+                                         )}
+                                         <Button 
+                                            variant="ghost" 
+                                            size="sm" 
+                                            className="h-8 w-8 p-0 text-gray-500 hover:text-red-400"
+                                            onClick={() => deleteRegistration(reg.id)}
+                                         >
+                                            <X className="w-4 h-4" />
+                                         </Button>
+                                      </div>
+                                   </td>
+                                </tr>
+                             ))
+                          )}
+                       </tbody>
+                    </table>
+                 </div>
+              </div>
+           </motion.div>
              )}
 
             {activeTab === 'chatbot' && (
