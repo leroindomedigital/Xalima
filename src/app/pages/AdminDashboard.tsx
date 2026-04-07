@@ -162,6 +162,13 @@ export function AdminDashboard() {
     }
   };
 
+  const deleteUnivCourse = async (id: number) => {
+    if (!confirm('Supprimer ce cours universitaire ?')) return;
+    const { error } = await supabase.from('courses_university').delete().eq('id', id);
+    if (error) alert(error.message);
+    else fetchData();
+  };
+
   const stats = [
     { label: "Inscriptions", value: dbRegistrations.length.toString(), icon: Users, color: "text-blue-400", trend: "+5%" },
     { label: "Cours Univ.", value: dbUnivCourses.length.toString(), icon: Film, color: "text-indigo-400", trend: "Stable" },
@@ -480,11 +487,12 @@ export function AdminDashboard() {
                                      </Badge>
                                   </td>
                                   <td className="px-8 py-6 font-medium text-gray-400 text-sm">{new Date(course.created_at).toLocaleDateString('fr-FR')}</td>
-                                  <td className="px-8 py-6">
+                                  <td className="px-8 py-6 flex items-center justify-between">
                                      <div className="flex items-center gap-2">
                                         <div className={`w-2 h-2 rounded-full bg-emerald-500`} />
                                         <span className="text-xs font-bold">Publié</span>
                                      </div>
+                                     <button className="text-gray-500 hover:text-red-400" onClick={() => deleteUnivCourse(course.id)}><X className="w-4 h-4" /></button>
                                   </td>
                                </tr>
                             ))

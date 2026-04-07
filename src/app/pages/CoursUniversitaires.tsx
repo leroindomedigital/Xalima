@@ -500,19 +500,30 @@ function VideoPlayerModal({ course, initialProgress, onClose }: { course: Course
            onMouseEnter={() => setShowControls(true)}
            onMouseLeave={() => setShowControls(false)}
         >
-           {/* Video Content Simulation */}
-           <div className="w-full h-full flex items-center justify-center relative">
-              <ImageWithFallback src={course.image} alt={course.title} className="absolute inset-0 w-full h-full object-cover opacity-30" />
-              
-              {!isPlaying ? (
-                 <button onClick={() => setIsPlaying(true)} className="w-24 h-24 bg-indigo-600 hover:bg-indigo-500 rounded-full flex items-center justify-center z-10 transition-transform hover:scale-110 shadow-[0_0_50px_rgba(79,70,229,0.5)]">
-                    <Play className="w-10 h-10 text-white fill-white ml-2" />
-                 </button>
+           {/* Video Content - Real Player */}
+           <div className="w-full h-full flex items-center justify-center relative bg-black">
+              {course.url ? (
+                 course.url.includes('youtube.com') || course.url.includes('youtu.be') || course.url.includes('vimeo.com') ? (
+                    <iframe 
+                       src={course.url.replace('watch?v=', 'embed/')} 
+                       className="w-full h-full border-none"
+                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                       allowFullScreen
+                    />
+                 ) : (
+                    <video 
+                       src={course.url} 
+                       controls 
+                       className="w-full h-full"
+                       poster={course.image}
+                    />
+                 )
               ) : (
-                <div className="z-10 text-center animate-pulse">
-                   <MonitorPlay className="w-16 h-16 text-white/50 mx-auto mb-4" />
-                   <p className="text-white/50 font-black uppercase tracking-widest text-xs">Lecture du flux vidéo en cours...</p>
-                </div>
+                 <div className="text-center p-12">
+                    <MonitorPlay className="w-16 h-16 text-gray-700 mx-auto mb-4" />
+                    <h4 className="text-white font-bold mb-2">Vidéo non disponible</h4>
+                    <p className="text-gray-500 text-sm">Le lien de cette vidéo n'a pas encore été configuré.</p>
+                 </div>
               )}
            </div>
 
@@ -627,24 +638,23 @@ function PdfReaderModal({ course, initialProgress, onClose }: { course: Course, 
               </div>
            </div>
 
-           {/* PDF Document Area */}
-           <div className="flex-1 overflow-auto bg-[#0f172a] p-8 flex justify-center custom-scrollbar">
-              <motion.div 
-                 animate={{ scale: zoom }}
-                 className="bg-white w-full max-w-2xl min-h-max aspect-[1/1.4] rounded-sm shadow-2xl text-black relative origin-top"
-              >
-                 <div className="p-12 text-center border-b border-gray-200">
-                    <h1 className="text-3xl font-black uppercase text-gray-900 mb-4">{course.title}</h1>
-                    <p className="text-sm font-bold text-gray-500 uppercase tracking-widest border-b border-gray-300 pb-8 inline-block mx-auto">
-                       Université: {course.univ} | Filière: {course.filiere}
-                    </p>
+           {/* PDF Document Area - Real Iframe */} 
+           <div className="flex-1 bg-[#0f172a] p-4 sm:p-8 flex justify-center overflow-hidden">
+              {course.url ? (
+                 <div className="w-full h-full bg-[#050816] rounded-xl border border-white/10 overflow-hidden relative shadow-2xl">
+                    <iframe 
+                       src={course.url.includes('google.com') ? course.url : `https://docs.google.com/viewer?url=${encodeURIComponent(course.url)}&embedded=true`}
+                       className="w-full h-full border-none"
+                       title={`Lecture : ${course.title}`}
+                    />
                  </div>
-                 <div className="p-12 space-y-4 text-gray-600 flex flex-col justify-center items-center opacity-30 mt-10">
-                    <FileText className="w-24 h-24 mb-6" />
-                    <p className="text-lg font-bold uppercase tracking-widest">Contenu du PDF</p>
-                    <p className="text-sm">Page {currentPage} sur {totalPages}</p>
-                 </div>
-              </motion.div>
+              ) : (
+                <div className="flex-grow bg-[#050816]/50 rounded-3xl border border-dashed border-white/10 flex flex-col items-center justify-center p-12 text-center min-h-[400px] w-full">
+                   <FileText className="w-16 h-16 text-gray-700 mb-6" />
+                   <h4 className="text-white font-bold mb-2">Fichier non disponible</h4>
+                   <p className="text-gray-500 text-sm max-w-xs">L'administrateur n'a pas encore ajouté le lien vers ce support PDF.</p>
+                </div>
+              )}
            </div>
 
            {/* Bottom Pagination Bar */}
