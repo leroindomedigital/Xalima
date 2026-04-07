@@ -8,6 +8,7 @@ import { EspaceApprentissage } from './pages/EspaceApprentissage';
 import { Register } from './pages/Register';
 import { AdminDashboard } from './pages/AdminDashboard';
 import { Login } from './pages/Login';
+import { NotFound } from './pages/NotFound';
 import { Layout } from './components/Layout';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
@@ -28,6 +29,7 @@ export const router = createBrowserRouter([
       },
       { path: 'login', Component: Login },
       { path: 'register', Component: Register },
+      { path: '*', Component: NotFound },
     ],
   },
 ]);
