@@ -16,9 +16,8 @@ export function Register() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isError, setIsError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [step, setStep] = useState(1); // 1: Info, 2: Payment Choice, 3: Payment Confirmation
+  const [step, setStep] = useState(1);
   const [paymentMethod, setPaymentMethod] = useState<'wave' | 'om' | null>(null);
-  const [transactionId, setTransactionId] = useState('');
   
   const [formData, setFormData] = useState({
     name: '',
@@ -49,31 +48,25 @@ export function Register() {
           city: formData.city,
           interest: formData.interest,
           payment_method: paymentMethod,
-          transaction_id: transactionId,
           status: 'En attente'
         }
       ]);
 
       if (error) {
-        // Fallback for missing columns if not yet migrated
-        if (error.code === '42703' || error.message?.includes('column')) {
-          const { error: error2 } = await supabase.from('registrations').insert([
-            {
-              full_name: formData.name,
-              email: formData.email,
-              phone: formData.phone,
-              status: `En attente (${paymentMethod} - ID: ${transactionId})`
-            }
-          ]);
-          if (error2) throw error2;
-        } else {
-          throw error;
-        }
+        throw error;
       }
 
       setIsSubmitted(true);
+      
+      // Redirect to Payment App after submission
       setTimeout(() => {
-        navigate('/');
+        if (paymentMethod === 'wave') {
+          window.location.href = "https://wave.me/";
+        } else if (paymentMethod === 'om') {
+          window.location.href = "tel:*144*1*1*778627067#";
+        } else {
+          navigate('/');
+        }
       }, 3500);
     } catch (err: any) {
       console.error('Erreur inscription:', err);
@@ -160,15 +153,14 @@ export function Register() {
                       <div className="flex items-center justify-between mb-2">
                         <h2 className="text-3xl font-black uppercase tracking-tight">Inscription Étudiant</h2>
                         <div className="flex gap-1.5">
-                           {[1, 2, 3].map(i => (
+                           {[1, 2].map(i => (
                              <div key={i} className={`h-1.5 w-8 rounded-full transition-all ${step >= i ? 'bg-indigo-500' : 'bg-white/10'}`} />
                            ))}
                         </div>
                       </div>
                       <p className="text-gray-500 text-sm">
                         {step === 1 && "Veuillez remplir vos informations pour débuter l'aventure Xalima."}
-                        {step === 2 && "Sélectionnez votre moyen de paiement sécurisé (Wave ou Orange Money)."}
-                        {step === 3 && "Effectuez le transfert, puis saisissez l'ID de transaction reçu par SMS."}
+                        {step === 2 && "Sélectionnez votre moyen de paiement sécurisé pour finaliser l'inscription."}
                       </p>
                     </div>
 
@@ -295,8 +287,10 @@ export function Register() {
                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                               <button 
                                 type="button"
-                                onClick={() => { setPaymentMethod('wave'); setStep(3); }}
-                                className="p-8 bg-blue-600/10 border-2 border-blue-600/20 rounded-[2rem] hover:border-blue-500 transition-all group text-left relative overflow-hidden"
+                                onClick={() => setPaymentMethod('wave')}
+                                className={`p-8 rounded-[2rem] border-2 transition-all group text-left relative overflow-hidden ${
+                                  paymentMethod === 'wave' ? 'bg-blue-600/20 border-blue-500 ring-4 ring-blue-500/20' : 'bg-blue-600/10 border-blue-600/20 hover:border-blue-500'
+                                }`}
                               >
                                  <div className="relative z-10">
                                    <div className="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center mb-6 shadow-lg shadow-blue-500/20">
@@ -310,8 +304,10 @@ export function Register() {
 
                               <button 
                                 type="button"
-                                onClick={() => { setPaymentMethod('om'); setStep(3); }}
-                                className="p-8 bg-orange-600/10 border-2 border-orange-600/20 rounded-[2rem] hover:border-orange-500 transition-all group text-left relative overflow-hidden"
+                                onClick={() => setPaymentMethod('om')}
+                                className={`p-8 rounded-[2rem] border-2 transition-all group text-left relative overflow-hidden ${
+                                  paymentMethod === 'om' ? 'bg-orange-600/20 border-orange-500 ring-4 ring-orange-500/20' : 'bg-orange-600/10 border-orange-600/20 hover:border-orange-500'
+                                }`}
                               >
                                  <div className="relative z-10">
                                    <div className="w-12 h-12 bg-orange-500 rounded-xl flex items-center justify-center mb-6 shadow-lg shadow-orange-500/20">
@@ -324,6 +320,29 @@ export function Register() {
                               </button>
                            </div>
 
+                           {paymentMethod && (
+                             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+                                <div className={`p-6 rounded-[1.5rem] border ${paymentMethod === 'wave' ? 'bg-blue-600/5 border-blue-500/20' : 'bg-orange-600/5 border-orange-500/20'}`}>
+                                   <p className="text-[11px] text-gray-400 font-bold uppercase tracking-widest mb-2">
+                                      {paymentMethod === 'wave' ? "Instructions Wave" : "Instructions Orange Money"}
+                                   </p>
+                                   <p className="text-sm text-gray-100">
+                                      Vous allez être redirigé vers l'application pour payer le montant au : <br />
+                                      <span className="font-black text-lg text-white tracking-widest">+221 77 862 70 67</span>
+                                   </p>
+                                </div>
+
+                                <Button
+                                  type="submit"
+                                  className={`w-full h-16 text-white font-black uppercase tracking-[0.2em] rounded-2xl shadow-xl active:scale-95 transition-all ${
+                                    paymentMethod === 'wave' ? 'bg-blue-600 hover:bg-blue-700 shadow-blue-600/20' : 'bg-orange-600 hover:bg-orange-700 shadow-orange-600/20'
+                                  }`}
+                                >
+                                  Payer via {paymentMethod === 'wave' ? 'Wave' : 'Orange Money'}
+                                </Button>
+                             </motion.div>
+                           )}
+
                            <button 
                              type="button"
                              onClick={() => setStep(1)}
@@ -335,66 +354,6 @@ export function Register() {
                         </motion.div>
                       )}
 
-                      {step === 3 && (
-                        <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-8">
-                           <div className={`p-8 rounded-[2rem] border-2 ${paymentMethod === 'wave' ? 'bg-blue-600/5 border-blue-500/20' : 'bg-orange-600/5 border-orange-500/20'}`}>
-                              <h4 className="text-lg font-black uppercase tracking-tight text-white mb-4">Instructions de paiement</h4>
-                              
-                              <div className="space-y-4">
-                                 <div className="flex items-center gap-4">
-                                   <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${paymentMethod === 'wave' ? 'bg-blue-500' : 'bg-orange-500'}`}>1</div>
-                                   <p className="text-sm text-gray-100 italic">
-                                     {paymentMethod === 'wave' 
-                                       ? "Ouvrez votre application WAVE sur mobile." 
-                                       : "Composez le #144# sur votre téléphone."}
-                                   </p>
-                                 </div>
-                                 <div className="flex items-center gap-4">
-                                   <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${paymentMethod === 'wave' ? 'bg-blue-500' : 'bg-orange-500'}`}>2</div>
-                                   <p className="text-sm text-gray-100">
-                                      Payez le montant total de la formation au numéro : <br />
-                                      <span className="font-black text-xl tracking-wider text-white">+221 77 862 70 67</span>
-                                   </p>
-                                 </div>
-                                 <div className="flex items-center gap-4">
-                                   <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${paymentMethod === 'wave' ? 'bg-blue-500' : 'bg-orange-500'}`}>3</div>
-                                   <p className="text-xs text-gray-400 font-bold uppercase tracking-wide">
-                                      Note : Les frais d'envoi sont à la charge de l'étudiant.
-                                   </p>
-                                 </div>
-                              </div>
-                           </div>
-
-                           <div className="space-y-3">
-                              <Label className="text-[10px] font-black uppercase tracking-widest text-indigo-400">ID de Transaction (ID reçu par SMS)</Label>
-                              <Input 
-                                required 
-                                value={transactionId}
-                                onChange={(e) => setTransactionId(e.target.value)}
-                                className="h-14 bg-white/5 border-white/10 rounded-2xl focus:border-indigo-500 transition-all text-center font-black tracking-[0.2em]" 
-                                placeholder="Ex: S-10293847" 
-                              />
-                              <p className="text-[9px] text-gray-500 italic text-center">Indiquez l'ID de transaction pour que l'admin puisse valider votre accès.</p>
-                           </div>
-
-                           <div className="flex flex-col gap-4">
-                              <Button
-                                type="submit"
-                                disabled={!transactionId}
-                                className="w-full h-16 bg-indigo-600 hover:bg-indigo-700 text-white font-black uppercase tracking-[0.2em] rounded-2xl shadow-xl shadow-indigo-600/20 active:scale-95 transition-all disabled:opacity-50"
-                              >
-                                Finaliser mon Inscription
-                              </Button>
-                              <button 
-                                type="button"
-                                onClick={() => setStep(2)}
-                                className="text-gray-500 hover:text-white transition-colors text-[10px] font-black uppercase tracking-widest"
-                              >
-                                Changer de mode de paiement
-                              </button>
-                           </div>
-                        </motion.div>
-                      )}
 
                       {isError && (
                         <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-500 text-xs font-bold flex flex-col gap-2">
