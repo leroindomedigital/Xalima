@@ -635,7 +635,7 @@ function PdfReaderModal({ course, onClose }: { course: Course, initialProgress: 
 
            {/* PDF Document Area - Double Layer Viewer */} 
            <div className="flex-1 bg-[#050816] relative overflow-hidden group">
-              {course.url ? (
+              {course.url && course.url !== '#' ? (
                  <div className="w-full h-full relative">
                     {/* Primary Native Viewer or Google Fallback */}
                     <iframe 
@@ -660,9 +660,14 @@ function PdfReaderModal({ course, onClose }: { course: Course, initialProgress: 
                  </div>
               ) : (
                 <div className="absolute inset-0 flex flex-col items-center justify-center p-12 text-center bg-[#050816]">
-                   <FileText className="w-16 h-16 text-gray-800 mb-6 animate-pulse" />
-                   <h4 className="text-white font-black uppercase text-xl mb-3">Fichier indisponible</h4>
-                   <p className="text-gray-500 text-sm max-w-sm uppercase tracking-widest font-bold">L'URL du document est manquante dans la base de données.</p>
+                   <div className="w-24 h-24 bg-white/5 rounded-3xl flex items-center justify-center mb-8 border border-white/10 ring-4 ring-indigo-500/10">
+                      <Clock className="w-10 h-10 text-indigo-500 animate-pulse" />
+                   </div>
+                   <h4 className="text-white font-black uppercase text-xl mb-3">Cours en préparation</h4>
+                   <p className="text-gray-500 text-sm max-w-sm uppercase tracking-widest font-bold">
+                      Notre équipe pédagogique finalise le support pour ce cours. <br />
+                      <span className="text-indigo-400/50">Revenez d'ici quelques instants !</span>
+                   </p>
                 </div>
               )}
            </div>
