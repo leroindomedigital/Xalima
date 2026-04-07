@@ -4,16 +4,17 @@ import { Badge } from '../components/ui/badge';
 import { 
   BookOpen, GraduationCap, Award, Users, ArrowRight, CheckCircle2, 
   Star, Zap, Play, Sparkles, Globe, ShieldCheck, Rocket, 
-  MessageSquare, ChevronRight, TrendingUp
+  MessageSquare, ChevronRight, TrendingUp, ChevronLeft
 } from 'lucide-react';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 
 export function Home() {
   const scrollRef = useRef(null);
+  const navigate = useNavigate();
   const { scrollYProgress } = useScroll({
     target: scrollRef,
     offset: ["start start", "end start"]
@@ -75,6 +76,11 @@ export function Home() {
       image: "/images/illustrations/coding_premium.png"
     }
   ];
+
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const nextTestimonial = () => setActiveIndex((prev: number) => (prev + 1) % testimonials.length);
+  const prevTestimonial = () => setActiveIndex((prev: number) => (prev - 1 + testimonials.length) % testimonials.length);
 
   return (
     <div className="min-h-screen bg-[#020617] text-white selection:bg-indigo-500/30 overflow-x-hidden" ref={scrollRef}>
@@ -419,28 +425,50 @@ export function Home() {
                 Rejoignez une communauté d'ambitieux qui redéfinissent les limites du possible au Sénégal.
               </p>
               <div className="flex gap-4">
-                <Button variant="outline" className="h-14 w-14 rounded-full border-white/10 text-white"><ArrowRight className="rotate-180" /></Button>
-                <Button className="h-14 w-14 rounded-full bg-indigo-600 text-white shadow-xl shadow-indigo-600/20"><ArrowRight /></Button>
+                <Button 
+                  variant="outline" 
+                  className="h-14 w-14 rounded-full border-white/10 text-white flex items-center justify-center p-0"
+                  onClick={prevTestimonial}
+                >
+                  <ChevronLeft className="w-6 h-6" />
+                </Button>
+                <Button 
+                  className="h-14 w-14 rounded-full bg-indigo-600 text-white shadow-xl shadow-indigo-600/20 flex items-center justify-center p-0"
+                  onClick={nextTestimonial}
+                >
+                  <ChevronRight className="w-6 h-6" />
+                </Button>
               </div>
             </div>
             
-            <div className="lg:w-2/3 grid md:grid-cols-2 gap-8">
-              {testimonials.map((t, i) => (
-                <div key={i} className="bg-white/5 border border-white/10 p-12 rounded-[3.5rem] backdrop-blur-3xl relative overflow-hidden group">
-                  <div className="absolute -right-20 -bottom-20 w-40 h-40 bg-indigo-600/10 blur-3xl rounded-full"></div>
-                  <MessageSquare className="w-12 h-12 text-indigo-500 mb-10 opacity-50" />
-                  <p className="text-2xl font-medium text-gray-200 mb-12 leading-relaxed italic">"{t.content}"</p>
-                  <div className="flex items-center space-x-6">
-                    <div className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-indigo-500/30">
-                      <ImageWithFallback src={t.image} alt={t.name} className="w-full h-full object-cover" />
-                    </div>
+            <div className="lg:w-2/3 relative h-[400px] overflow-hidden">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeIndex}
+                  initial={{ opacity: 0, x: 50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -50 }}
+                  transition={{ duration: 0.5, ease: "easeInOut" }}
+                  className="absolute inset-0"
+                >
+                  <div className="bg-white/5 border border-white/10 p-12 rounded-[3.5rem] backdrop-blur-3xl relative overflow-hidden group h-full flex flex-col justify-between">
+                    <div className="absolute -right-20 -bottom-20 w-40 h-40 bg-indigo-600/10 blur-3xl rounded-full"></div>
                     <div>
-                      <div className="font-black text-xl text-white">{t.name}</div>
-                      <div className="text-gray-500 font-bold text-sm uppercase tracking-widest">{t.role}</div>
+                      <MessageSquare className="w-12 h-12 text-indigo-500 mb-10 opacity-50" />
+                      <p className="text-2xl sm:text-3xl font-medium text-gray-200 mb-12 leading-relaxed italic">"{testimonials[activeIndex].content}"</p>
+                    </div>
+                    <div className="flex items-center space-x-6">
+                      <div className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-indigo-500/30">
+                        <ImageWithFallback src={testimonials[activeIndex].image} alt={testimonials[activeIndex].name} className="w-full h-full object-cover" />
+                      </div>
+                      <div>
+                        <div className="font-black text-xl text-white">{testimonials[activeIndex].name}</div>
+                        <div className="text-gray-500 font-bold text-sm uppercase tracking-widest">{testimonials[activeIndex].role}</div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                </motion.div>
+              </AnimatePresence>
             </div>
           </div>
         </div>
