@@ -11,6 +11,7 @@ import {
 import { Link, useNavigate } from 'react-router';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Helmet } from 'react-helmet-async';
 import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 
@@ -413,7 +414,13 @@ export function Formation() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#020617] text-white pt-20 pb-16 overflow-hidden">
+    <div className="min-h-screen bg-[#020617] text-white selection:bg-indigo-500/30 overflow-x-hidden">
+      <Helmet>
+        <title>Formations Certifiantes | XALIMA Digital Academy</title>
+        <meta name="description" content="Boostez votre carrière avec les formations intensives de Xalima. Marketing Digital, Développement Web, Entrepreneuriat. Certifications reconnues." />
+        <meta name="keywords" content="formation certifiante Sénégal, marketing digital dakar, apprendre le code sénégal, xalima formations" />
+      </Helmet>
+      
       {/* Background Decor */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-indigo-600/5 blur-[120px] rounded-full"></div>

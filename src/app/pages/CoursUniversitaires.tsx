@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Helmet } from 'react-helmet-async';
 import { useState, useMemo, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 
@@ -165,14 +166,15 @@ export function CoursUniversitaires() {
   };
 
   const filteredCourses = useMemo(() => {
-    const baseCourses = dynamicCourses.length > 0 ? dynamicCourses : ALL_COURSES;
-    return baseCourses.filter(course => {
-      const matchSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    const list = dynamicCourses.length > 0 ? dynamicCourses : ALL_COURSES;
+    return list.filter(course => {
+      const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           course.filiere.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchCat = selectedCat === 'all' || course.cat === selectedCat;
-      const matchFiliere = selectedFiliere === 'Tous' || course.filiere === selectedFiliere;
-      const matchUniv = selectedUniv === 'Tous' || course.univ === selectedUniv;
-      return matchSearch && matchCat && matchFiliere && matchUniv;
+      const matchesCat = selectedCat === 'all' || course.cat === selectedCat;
+      const matchesFiliere = selectedFiliere === 'Tous' || course.filiere === selectedFiliere;
+      const matchesUniv = selectedUniv === 'Tous' || course.univ === selectedUniv;
+      
+      return matchesSearch && matchesCat && matchesFiliere && matchesUniv;
     });
   }, [searchQuery, selectedCat, selectedFiliere, selectedUniv, dynamicCourses]);
 
@@ -184,6 +186,11 @@ export function CoursUniversitaires() {
 
   return (
     <div className="min-h-screen bg-[#020617] text-white pt-24 pb-20 overflow-x-hidden">
+      <Helmet>
+        <title>Cours Universitaires Gratuits | UCAD, UGB, UASZ | XALIMA</title>
+        <meta name="description" content="Accédez gratuitement à des centaines de supports de cours (PDF, Vidéos) pour les universités publiques du Sénégal. Tout pour réussir votre licence et master." />
+        <meta name="keywords" content="cours ucad gratuit, supports de cours sénégal, révision examen sénégal, xalima cours univ" />
+      </Helmet>
       {/* Visual Background Decoration */}
       <div className="fixed inset-0 pointer-events-none z-0">
         <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-indigo-600/5 blur-[150px] rounded-full" />

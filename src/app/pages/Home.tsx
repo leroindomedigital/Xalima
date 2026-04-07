@@ -10,6 +10,7 @@ import { Link } from 'react-router';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
+import { Helmet } from 'react-helmet-async';
 
 export function Home() {
   const scrollRef = useRef(null);
@@ -77,6 +78,17 @@ export function Home() {
 
   return (
     <div className="min-h-screen bg-[#020617] text-white selection:bg-indigo-500/30 overflow-x-hidden" ref={scrollRef}>
+      <Helmet>
+        <title>XALIMA | L'Excellence Académique et Numérique au Sénégal</title>
+        <meta name="description" content="Découvrez XALIMA, la plateforme d'apprentissage de référence au Sénégal. Formations professionnelles certifiantes et supports de cours universitaires gratuits (UCAD, UGB, UASZ)." />
+        <meta name="keywords" content="Xalima, formation Sénégal, cours gratuit Sénégal, université Sénégal, UCAD, UGB, apprentissage numérique, digital Senegal" />
+        <meta property="og:title" content="XALIMA | L'Excellence Académique et Numérique au Sénégal" />
+        <meta property="og:description" content="Propulsez votre carrière avec nos formations certifiantes et accédez gratuitement aux meilleurs supports de cours universitaires." />
+        <meta property="og:image" content="https://xalima.vercel.app/images/illustrations/students_hero_new.jpg" />
+        <meta property="og:url" content="https://xalima.vercel.app/" />
+        <meta name="twitter:card" content="summary_large_image" />
+      </Helmet>
+
       {/* Dynamic Background Elements */}
       <div className="fixed inset-0 pointer-events-none z-0">
         <motion.div 
