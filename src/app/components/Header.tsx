@@ -92,14 +92,6 @@ export function Header() {
                  >
                     <LogOut size={18} />
                  </button>
-
-                 {user.email === 'leroindomedigital@gmail.com' && (
-                    <Link to="/admin">
-                       <Button size="sm" className="bg-indigo-600/10 border border-indigo-500/20 text-indigo-400 hover:bg-indigo-600 hover:text-white px-4">
-                          Console Admin
-                       </Button>
-                    </Link>
-                 )}
               </div>
             ) : (
               <>
