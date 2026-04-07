@@ -72,7 +72,9 @@ export function Login() {
         if (isAdmin) {
           navigate('/admin', { replace: true });
         } else {
-          navigate(from || '/', { replace: true });
+          // Si c'est un étudiant, on le renvoie toujours à l'accueil, 
+          // même s'il essayait d'accéder à l'admin par erreur.
+          navigate('/', { replace: true });
         }
       }
     } catch (err: any) {
@@ -102,12 +104,12 @@ export function Login() {
            </div>
            
            <h1 className="text-7xl font-black leading-tight tracking-tighter mb-8 uppercase cursor-default">
-              {isRegister ? "Créez votre" : "Accédez à"} <br />
-              <span className="text-indigo-500 drop-shadow-[0_0_20px_rgba(99,102,241,0.5)]">{isRegister ? "Avenir" : "Espace"}</span>
+              {isRegister ? "Créez votre" : "Espace"} <br />
+              <span className="text-indigo-500 drop-shadow-[0_0_20px_rgba(99,102,241,0.5)]">{isRegister ? "Avenir" : "Étudiant"}</span>
            </h1>
            
            <p className="text-xl text-gray-500 font-medium max-w-md leading-relaxed mb-12">
-              Rejoignez l'élite académique du Sénégal. Accédez à vos cours, suivez vos formations et certifiez vos compétences.
+              Rejoignez l'élite académique du Sénégal. Accédez à vos cours, suivez vos formations et certifiez vos compétences en toute simplicité.
            </p>
 
            <button 
