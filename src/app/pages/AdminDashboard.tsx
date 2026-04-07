@@ -5,7 +5,8 @@ import {
   Download, FileText, CheckCircle2, X,
   TrendingUp, Wallet, GraduationCap, AlertCircle,
   ChevronRight, ArrowRight, ShieldCheck, PieChart,
-  MessageSquare, Star, Clock, Video, Film, Bot, Sparkles, Brain
+  MessageSquare, Star, Clock, Video, Film, Bot, Sparkles, Brain,
+  RefreshCw
 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
@@ -216,6 +217,14 @@ export function AdminDashboard() {
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <Input className="w-64 bg-white/5 border-white/10 rounded-2xl pl-12 h-12 focus:border-indigo-500 transition-all font-medium placeholder:text-gray-500" placeholder="Rechercher..." />
              </div>
+              <Button 
+                variant="outline" 
+                className="h-12 w-12 rounded-2xl border-white/10 p-0 relative group"
+                onClick={fetchData}
+                disabled={isLoading}
+              >
+                <RefreshCw className={`w-5 h-5 text-gray-400 group-hover:text-indigo-400 transition-all ${isLoading ? 'animate-spin' : ''}`} />
+              </Button>
              <Button variant="outline" className="h-12 w-12 rounded-2xl border-white/10 p-0 relative">
                 <Bell className="w-5 h-5 text-gray-400" />
                 <span className="absolute top-3 right-3 w-2 h-2 bg-indigo-500 rounded-full border-2 border-[#020617]"></span>
