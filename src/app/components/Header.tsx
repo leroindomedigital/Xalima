@@ -1,12 +1,14 @@
 import { Link, useLocation, useNavigate } from 'react-router';
-import { Menu, X } from 'lucide-react';
-import { useState } from 'react';
+import { Menu, X, LogOut, User } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from './ui/button';
+import { useAuth } from '../../context/AuthContext';
 
 export function Header() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { user, profile, signOut } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navLinks = [
@@ -17,12 +19,19 @@ export function Header() {
   ];
 
   const handleLogin = () => {
-    alert('Fonctionnalité de connexion à venir !\n\nVous pourrez bientôt vous connecter à votre compte Xalima.');
+    setMobileMenuOpen(false);
+    navigate('/login');
   };
 
   const handleSignup = () => {
     setMobileMenuOpen(false);
-    navigate('/register');
+    navigate('/login', { state: { mode: 'register' } });
+  };
+
+  const handleSignOut = async () => {
+    setMobileMenuOpen(false);
+    await signOut();
+    navigate('/');
   };
 
   return (
@@ -66,18 +75,48 @@ export function Header() {
 
           {/* Desktop Auth Buttons */}
           <div className="hidden md:flex items-center space-x-6">
-            <button
-              className="text-[10px] font-bold tracking-[0.2em] text-gray-500 hover:text-white transition-colors cursor-pointer px-4 py-2"
-              onClick={handleSignup}
-            >
-              Inscription
-            </button>
-            <Button
-              className="h-10 px-6 bg-indigo-600 border-none text-white hover:bg-indigo-700 transition-all duration-300 rounded-lg font-bold text-[10px] tracking-[0.2em] cursor-pointer active:scale-95"
-              onClick={handleLogin}
-            >
-              Connexion
-            </Button>
+            {user ? (
+              <div className="flex items-center gap-6">
+                 <div className="flex items-center gap-3 bg-white/5 px-4 py-2 rounded-xl border border-white/10">
+                    <div className="w-6 h-6 rounded-lg bg-indigo-600 flex items-center justify-center text-[10px] font-black uppercase text-white">
+                       {profile?.full_name?.charAt(0) || user.email?.charAt(0).toUpperCase() || 'U'}
+                    </div>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-gray-300">
+                       {profile?.full_name || 'Utilisateur'}
+                    </span>
+                 </div>
+                 <button 
+                    onClick={handleSignOut}
+                    className="text-gray-500 hover:text-rose-400 transition-colors"
+                    title="Déconnexion"
+                 >
+                    <LogOut size={18} />
+                 </button>
+
+                 {user.email === 'leroindomedigital@gmail.com' && (
+                    <Link to="/admin">
+                       <Button size="sm" className="bg-indigo-600/10 border border-indigo-500/20 text-indigo-400 hover:bg-indigo-600 hover:text-white px-4">
+                          Console Admin
+                       </Button>
+                    </Link>
+                 )}
+              </div>
+            ) : (
+              <>
+                <button
+                  className="text-[10px] font-bold tracking-[0.2em] text-gray-500 hover:text-white transition-colors cursor-pointer px-4 py-2"
+                  onClick={handleSignup}
+                >
+                  Inscription
+                </button>
+                <Button
+                  className="h-10 px-6 bg-indigo-600 border-none text-white hover:bg-indigo-700 transition-all duration-300 rounded-lg font-bold text-[10px] tracking-[0.2em] cursor-pointer active:scale-95"
+                  onClick={handleLogin}
+                >
+                  Connexion
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -147,31 +186,38 @@ export function Header() {
 
           {/* Bottom Call to Action Buttons */}
           <div className="w-full max-w-sm space-y-4 mb-8">
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
-              <Button
-                size="lg"
-                className="w-full h-16 bg-indigo-600 hover:bg-indigo-700 text-white font-black uppercase tracking-[0.2em] rounded-2xl text-xs shadow-[0_0_30px_rgba(79,70,229,0.3)] transition-all"
-                onClick={handleSignup}
-              >
-                S'inscrire maintenant
-              </Button>
-            </motion.div>
+            {user ? (
+               <div className="text-center space-y-6">
+                  <div className="space-y-1">
+                     <p className="text-gray-500 text-[10px] font-black uppercase tracking-widest">Connecté en tant que</p>
+                     <p className="text-white text-2xl font-black uppercase tracking-tight">{profile?.full_name || 'Utilisateur'}</p>
+                  </div>
+                  <Button
+                    size="lg"
+                    className="w-full h-16 bg-white/5 border border-white/10 text-rose-400 font-black uppercase tracking-[0.2em] rounded-2xl text-xs"
+                    onClick={handleSignOut}
+                  >
+                    Se déconnecter
+                  </Button>
+               </div>
+            ) : (
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="space-y-4">
+                <Button
+                  size="lg"
+                  className="w-full h-16 bg-indigo-600 hover:bg-indigo-700 text-white font-black uppercase tracking-[0.2em] rounded-2xl text-xs shadow-[0_0_30px_rgba(79,70,229,0.3)] transition-all"
+                  onClick={handleSignup}
+                >
+                  S'inscrire maintenant
+                </Button>
+                <button
+                  className="w-full py-4 text-gray-500 font-black uppercase tracking-widest text-[10px]"
+                  onClick={handleLogin}
+                >
+                  Déjà membre ? Se connecter
+                </button>
+              </motion.div>
+            )}
           </div>
-          
-          {/* Social Links Footer */}
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8 }}
-            className="flex justify-center space-x-8 text-gray-500 pb-4"
-          >
-            {['LinkedIn', 'TikTok', 'Instagram'].map(social => (
-              <span key={social} className="text-[10px] font-black uppercase tracking-widest hover:text-white cursor-pointer transition-colors">
-                {social}
-              </span>
-            ))}
-          </motion.div>
-
         </motion.div>
       )}
     </AnimatePresence>

@@ -1,7 +1,7 @@
 import { Navigate, useLocation } from 'react-router';
 import { useAuth } from '../../context/AuthContext';
 
-export function ProtectedRoute({ children }: { children: React.ReactNode }) {
+export function ProtectedRoute({ children, adminOnly = false }: { children: React.ReactNode, adminOnly?: boolean }) {
   const { session, loading } = useAuth();
   const location = useLocation();
 
