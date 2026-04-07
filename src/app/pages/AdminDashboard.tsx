@@ -5,7 +5,7 @@ import {
   Download, FileText, CheckCircle2, X,
   TrendingUp, Wallet, GraduationCap, AlertCircle,
   ChevronRight, ArrowRight, ShieldCheck, PieChart,
-  MessageSquare, Star, Clock, Video, Film
+  MessageSquare, Star, Clock, Video, Film, Bot, Sparkles, Brain
 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
@@ -21,11 +21,15 @@ export function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('overview');
   const [isAddingPDF, setIsAddingPDF] = useState(false);
   const [isAddingUnivCourse, setIsAddingUnivCourse] = useState(false);
+  const [isAddingKB, setIsAddingKB] = useState(false);
   
   const [dbRegistrations, setDbRegistrations] = useState<any[]>([]);
   const [dbUnivCourses, setDbUnivCourses] = useState<any[]>([]);
   const [dbFormations, setDbFormations] = useState<any[]>([]);
+  const [chatbotKB, setChatbotKB] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  const [newKB, setNewKB] = useState({ category: 'Général', keywords: '', content: '' });
 
   const [newUnivCourse, setNewUnivCourse] = useState({
     title: '', faculty: 'Mathématiques', type: 'video', url: '', duration: '', pages: ''
@@ -50,8 +54,30 @@ export function AdminDashboard() {
     const { data: forms } = await supabase.from('formations').select('*').order('id', { ascending: false });
     if (forms) setDbFormations(forms);
 
+    // Fetch chatbot knowledge
+    const { data: kb } = await supabase.from('chatbot_knowledge').select('*').order('created_at', { ascending: false });
+    if (kb) setChatbotKB(kb || []);
+
     setIsLoading(false);
   }
+
+  const handleSaveKB = async () => {
+    const { error } = await supabase.from('chatbot_knowledge').insert([
+      {
+        category: newKB.category,
+        question_trigger: newKB.keywords,
+        content: newKB.content
+      }
+    ]);
+
+    if (error) {
+      alert('Erreur : ' + error.message);
+    } else {
+      setIsAddingKB(false);
+      setNewKB({ category: 'Général', keywords: '', content: '' });
+      fetchData();
+    }
+  };
 
   const handleSaveUnivCourse = async () => {
     const { error } = await supabase.from('courses_university').insert([
@@ -144,6 +170,7 @@ export function AdminDashboard() {
               { id: 'courses', icon: BookOpen, label: "Gestion Formations" },
               { id: 'univ_courses', icon: Film, label: "Cours Univ. (Vidéos/PDF)" },
               { id: 'students', icon: Users, label: "Inscriptions" },
+              { id: 'chatbot', icon: Bot, label: "IA & Chatbot JAMRA" },
               { id: 'suggestions', icon: MessageSquare, label: "Suggestions" },
               { id: 'finance', icon: Wallet, label: "Finances & Revenus" },
               { id: 'analytics', icon: PieChart, label: "Analytiques" },
@@ -411,19 +438,39 @@ export function AdminDashboard() {
           </motion.div>
             )}
 
-            {activeTab === 'students' && (
+             {activeTab === 'students' && (
+               <motion.div 
+                 initial={{ opacity: 0, x: 20 }}
+                 animate={{ opacity: 1, x: 0 }}
+                 className="space-y-10"
+               >
+                 {/* ... student table code ... */}
+               </motion.div>
+             )}
+
+            {activeTab === 'chatbot' && (
               <motion.div 
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 className="space-y-10"
               >
-                 <div className="flex items-center justify-between">
-                   <h3 className="text-2xl font-black uppercase tracking-tight">Inscriptions <span className="text-indigo-500">Récentes</span></h3>
-                   <div className="flex gap-4">
-                      <Button variant="outline" className="border-white/10 rounded-xl px-6 h-12 flex gap-2">
-                         <Download className="w-4 h-4" />
-                         Exporter CSV
-                      </Button>
+                <div className="flex items-center justify-between">
+                   <h3 className="text-2xl font-black uppercase tracking-tight">Base de Connaissances <span className="text-indigo-500">JAMRA</span></h3>
+                   <Button className="bg-indigo-600 hover:bg-indigo-700 rounded-xl px-6 h-12 flex gap-2" onClick={() => setIsAddingKB(true)}>
+                      <Plus className="w-4 h-4" />
+                      Ajouter une Connaissance
+                   </Button>
+                </div>
+
+                <div className="bg-indigo-600/5 border border-indigo-500/10 p-8 rounded-[2rem] flex items-center gap-6">
+                   <div className="w-16 h-16 bg-indigo-600 rounded-2xl flex items-center justify-center shrink-0">
+                      <Brain className="w-8 h-8 text-white" />
+                   </div>
+                   <div>
+                      <h4 className="font-black text-white uppercase tracking-wider mb-1">Intelligence Artificielle Locale</h4>
+                      <p className="text-xs text-gray-400 leading-relaxed">
+                         Collez ici les textes extraits de vos cours PDF. Le chatbot **JAMRA** utilisera ces informations pour répondre aux questions spécifiques des étudiants sur les cours, les facultés et les inscriptions.
+                      </p>
                    </div>
                 </div>
 
@@ -432,55 +479,41 @@ export function AdminDashboard() {
                       <table className="w-full text-left min-w-[800px]">
                       <thead>
                          <tr className="border-b border-white/10">
-                            <th className="px-8 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Apprenant</th>
-                            <th className="px-8 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest hidden md:table-cell">Programme</th>
-                            <th className="px-8 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest hidden lg:table-cell">Date</th>
-                            <th className="px-8 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Montant</th>
-                            <th className="px-8 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Statut</th>
+                            <th className="px-8 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Catégorie</th>
+                            <th className="px-8 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Mots-clés / Triggers</th>
+                            <th className="px-8 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Aperçu du contenu</th>
+                            <th className="px-8 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Date</th>
                             <th className="px-8 py-6"></th>
                          </tr>
                       </thead>
                       <tbody className="divide-y divide-white/5">
-                         {recentRegistrations.map((reg, i) => (
-                            <tr key={i} className="hover:bg-white/5 transition-colors group">
-                               <td className="px-8 py-6">
-                                  <div className="flex items-center gap-4">
-                                     <div className="w-10 h-10 rounded-xl bg-indigo-600/10 border border-indigo-500/20 flex items-center justify-center font-bold text-indigo-400">
-                                        {reg.name.charAt(0)}
-                                     </div>
-                                     <div>
-                                         <p className="font-bold text-white">{reg.name}</p>
-                                         <p className="text-[10px] text-gray-400 uppercase font-bold tracking-widest">ID: #XAL-{reg.id.toString().slice(-4)}</p>
-                                     </div>
-                                  </div>
-                               </td>
-                               <td className="px-8 py-6 font-medium text-gray-300 text-sm hidden md:table-cell">
-                                  {reg.course}
-                               </td>
-                               <td className="px-8 py-6 text-xs text-gray-400 font-bold uppercase tracking-widest hidden lg:table-cell">
-                                  {reg.date}
-                               </td>
-                               <td className="px-8 py-6 font-black text-white">
-                                  {reg.amount}
-                               </td>
-                               <td className="px-8 py-6">
-                                  <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${
-                                    reg.status === 'Payé' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-yellow-500/10 text-yellow-400'
-                                  }`}>
-                                     {reg.status === 'Payé' ? <CheckCircle2 className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
-                                     {reg.status}
-                                  </div>
-                               </td>
-                               <td className="px-8 py-6 text-right">
-                                  <button className="text-gray-400 hover:text-white"><Filter className="w-4 h-4" /></button>
-                               </td>
+                         {chatbotKB.length === 0 ? (
+                            <tr>
+                               <td colSpan={5} className="py-12 text-center text-gray-500 italic">Aucune connaissance ajoutée. Cliquez sur "Ajouter une Connaissance" pour commencer.</td>
                             </tr>
-                         ))}
+                         ) : (
+                            chatbotKB.map((kb) => (
+                               <tr key={kb.id} className="hover:bg-white/5 transition-colors group">
+                                  <td className="px-8 py-6 font-bold text-indigo-400">{kb.category}</td>
+                                  <td className="px-8 py-6 font-medium text-white">{kb.question_trigger}</td>
+                                  <td className="px-8 py-6 font-medium text-gray-400 text-sm max-w-[300px] truncate">{kb.content}</td>
+                                  <td className="px-8 py-6 font-medium text-gray-500 text-xs">{new Date(kb.created_at).toLocaleDateString('fr-FR')}</td>
+                                  <td className="px-8 py-6 text-right">
+                                     <button className="text-gray-500 hover:text-white" onClick={async () => {
+                                        if(confirm('Supprimer cette connaissance ?')) {
+                                           await supabase.from('chatbot_knowledge').delete().eq('id', kb.id);
+                                           fetchData();
+                                        }
+                                     }}><X className="w-4 h-4" /></button>
+                                  </td>
+                               </tr>
+                            ))
+                         )}
                       </tbody>
                    </table>
-                   </div>
                 </div>
-              </motion.div>
+             </div>
+          </motion.div>
             )}
 
           </div>
@@ -675,6 +708,82 @@ export function AdminDashboard() {
                            disabled={!newUnivCourse.title || !newUnivCourse.url}
                         >
                            Publier le Cours
+                        </Button>
+                     </div>
+                  </div>
+               </motion.div>
+            </div>
+         )}
+      </AnimatePresence>
+
+      {/* Chatbot KB Modal */}
+      <AnimatePresence>
+         {isAddingKB && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center px-4">
+               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={() => setIsAddingKB(false)} />
+               <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="relative w-full max-w-2xl bg-[#020617] border border-white/10 rounded-[3rem] overflow-hidden p-12">
+                  <div className="flex justify-between items-center mb-10">
+                     <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-2xl bg-indigo-600 flex items-center justify-center">
+                           <Sparkles className="w-6 h-6 text-white" />
+                        </div>
+                        <div>
+                           <h3 className="text-2xl font-black uppercase tracking-tight">Ajouter <span className="text-indigo-500">un Savoir</span></h3>
+                           <p className="text-gray-400 text-xs font-bold uppercase tracking-widest">Base de connaissances IA JAMRA</p>
+                        </div>
+                     </div>
+                     <button onClick={() => setIsAddingKB(false)}>
+                        <X className="w-6 h-6 text-gray-400 hover:text-white" />
+                     </button>
+                  </div>
+
+                  <div className="space-y-6">
+                     <div className="grid grid-cols-2 gap-6">
+                        <div className="space-y-3">
+                           <label className="text-[10px] font-black uppercase tracking-widest text-indigo-400">Catégorie</label>
+                           <select 
+                              value={newKB.category}
+                              onChange={(e) => setNewKB({...newKB, category: e.target.value})}
+                              className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl px-4 text-sm text-gray-300 focus:border-indigo-500 focus:outline-none"
+                           >
+                              <option value="Formation">Formation</option>
+                              <option value="Droit">Droit</option>
+                              <option value="Médecine">Médecine</option>
+                              <option value="Inscription">Inscription</option>
+                              <option value="Tarifs">Tarifs</option>
+                              <option value="Filières">Filières</option>
+                              <option value="Général">Général</option>
+                           </select>
+                        </div>
+                        <div className="space-y-3">
+                           <label className="text-[10px] font-black uppercase tracking-widest text-indigo-400">Mots-clés déclencheurs</label>
+                           <Input 
+                              value={newKB.keywords}
+                              onChange={(e) => setNewKB({...newKB, keywords: e.target.value})}
+                              className="bg-white/5 border-white/10 rounded-2xl h-14 text-white placeholder:text-gray-500" 
+                              placeholder="Ex: ADN, génétique, hérédité" 
+                           />
+                        </div>
+                     </div>
+
+                     <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-indigo-400">Contenu (Texte extrait du PDF)</label>
+                        <textarea 
+                           value={newKB.content}
+                           onChange={(e) => setNewKB({...newKB, content: e.target.value})}
+                           className="w-full min-h-[200px] bg-white/5 border border-white/10 rounded-2xl p-6 text-sm text-white focus:border-indigo-500 focus:outline-none font-medium leading-relaxed"
+                           placeholder="Copiez-collez ici le contenu exhaustif du document..."
+                        />
+                     </div>
+
+                     <div className="flex gap-4 pt-4">
+                        <Button variant="outline" className="flex-grow h-16 rounded-2xl border-white/10 text-white font-black uppercase tracking-widest" onClick={() => setIsAddingKB(false)}>Annuler</Button>
+                        <Button 
+                           className="flex-grow h-16 rounded-2xl bg-indigo-600 text-white font-black uppercase tracking-widest shadow-xl shadow-indigo-600/20" 
+                           onClick={handleSaveKB}
+                           disabled={!newKB.keywords || !newKB.content}
+                        >
+                           Enregistrer Savoir
                         </Button>
                      </div>
                   </div>

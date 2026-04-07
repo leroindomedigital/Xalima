@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, X, Send, Bot, User, ChevronRight, Sparkles } from 'lucide-react';
+import { supabase } from '../../lib/supabase';
 
 type Message = {
   id: number;
@@ -11,7 +12,7 @@ type Message = {
 
 const XALIMA_BRAIN: Record<string, { answer: string; quickReplies?: string[] }> = {
   'bonjour': {
-    answer: "👋 Bonjour ! Je suis **XaliBot**, votre assistant Xalima. Comment puis-je vous aider aujourd'hui ?",
+    answer: "👋 Bonjour ! Je suis **JAMRA**, votre assistant Xalima. Comment puis-je vous aider aujourd'hui ?",
     quickReplies: ["📚 Voir les formations", "🎓 Cours universitaires", "💰 Tarifs", "📝 S'inscrire"]
   },
   'salut': {
@@ -84,7 +85,7 @@ export function XalimaChat() {
     {
       id: 1,
       from: 'bot',
-      text: "👋 Bonjour ! Je suis **XaliBot**, votre assistant Xalima. Comment puis-je vous aider ?",
+      text: "👋 Bonjour ! Je suis **JAMRA**, votre assistant Xalima. Comment puis-je vous aider ?",
       quickReplies: ["📚 Voir les formations", "🎓 Cours universitaires", "💰 Tarifs", "📝 S'inscrire"]
     }
   ]);
@@ -105,13 +106,42 @@ export function XalimaChat() {
     setInput('');
     setIsTyping(true);
 
-    setTimeout(() => {
-      const response = getBotResponse(text);
+    setTimeout(async () => {
+      // 1. Check Hardcoded Brain First
+      let response = getBotResponse(text);
+      let answer = response.answer;
+      let quickReplies = response.quickReplies;
+
+      // 2. If it's a default response, try the Database Knowledge Base
+      if (answer === XALIMA_BRAIN['default'].answer) {
+        try {
+          const { data: kbItems } = await supabase
+            .from('chatbot_knowledge')
+            .select('*');
+          
+          if (kbItems) {
+            const lowerText = text.toLowerCase();
+            // Find a match where any keyword is in the user text
+            const match = kbItems.find(item => {
+              const keywords = item.question_trigger.toLowerCase().split(',').map((k: string) => k.trim());
+              return keywords.some((k: string) => lowerText.includes(k) && k.length > 2);
+            });
+
+            if (match) {
+              answer = match.content;
+              quickReplies = ["❓ Autre question", "📚 Voir formations"];
+            }
+          }
+        } catch (err) {
+          console.error("Chatbot KB Error:", err);
+        }
+      }
+
       const botMsg: Message = {
         id: Date.now() + 1,
         from: 'bot',
-        text: response.answer,
-        quickReplies: response.quickReplies
+        text: answer,
+        quickReplies: quickReplies
       };
       setMessages(prev => [...prev, botMsg]);
       setIsTyping(false);
@@ -164,7 +194,7 @@ export function XalimaChat() {
                   <Sparkles className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <p className="font-black text-white text-sm uppercase tracking-wider">XaliBot</p>
+                  <p className="font-black text-white text-sm uppercase tracking-wider">JAMRA</p>
                   <div className="flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
                     <p className="text-[10px] text-white/70 font-bold uppercase tracking-widest">Assistant Xalima</p>
