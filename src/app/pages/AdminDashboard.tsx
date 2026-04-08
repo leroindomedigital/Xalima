@@ -92,8 +92,9 @@ export function AdminDashboard() {
         faculty: newUnivCourse.faculty,
         type: newUnivCourse.type,
         url: newUnivCourse.url,
-        univ: newUnivCourse.univ,
-        cat: newUnivCourse.cat,
+        // Provisoirement retirés car absents de la table Supabase
+        // univ: newUnivCourse.univ,
+        // cat: newUnivCourse.cat,
         duration: newUnivCourse.type === 'video' ? (newUnivCourse.duration || 'N/A') : null,
         pages: newUnivCourse.type === 'pdf' ? (parseInt(newUnivCourse.pages) || 0) : null,
       }
