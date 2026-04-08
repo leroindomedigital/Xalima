@@ -829,6 +829,7 @@ export function AdminDashboard() {
                               <option value="Droit">Droit</option>
                               <option value="Médecine">Médecine</option>
                               <option value="Histoire">Histoire</option>
+                              <option value="Géographie">Géographie</option>
                               <option value="Gestion">Gestion</option>
                            </select>
                         </div>
